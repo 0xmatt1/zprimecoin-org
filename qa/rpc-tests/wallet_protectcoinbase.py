@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2016 The Zcash developers
+# Copyright (c) 2016 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -90,7 +90,7 @@ class WalletProtectCoinbaseTest (BitcoinTestFramework):
         # as it's currently not possible to specify a change address in z_sendmany.
         recipients = []
         recipients.append({"address":myzaddr, "amount":Decimal('1.23456789')})
-        
+
         myopid = self.nodes[0].z_sendmany(mytaddr, recipients)
         error_result = wait_and_assert_operationid_status_result(self.nodes[0], myopid, "failed", ("Change 8.76533211 not allowed. "
             "When shielding coinbase funds, the wallet does not allow any change "

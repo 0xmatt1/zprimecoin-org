@@ -1,1 +1,1 @@
-dist_man1_MANS=zcashd.1 zcash-cli.1 zcash-fetch-params.1 zcash-tx.1
+dist_man1_MANS=zprimed.1 zprime-cli.1 zprime-fetch-params.1 zprime-tx.1

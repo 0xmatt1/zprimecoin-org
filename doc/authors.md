@@ -1,4 +1,4 @@
-Zcash Contributors
+zPrime Contributors
 ==================
 
 Jack Grigg (863)

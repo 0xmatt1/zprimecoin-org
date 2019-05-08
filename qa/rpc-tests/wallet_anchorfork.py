@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2018 The Zcash developers
+# Copyright (c) 2018 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -101,10 +101,10 @@ class WalletAnchorForkTest (BitcoinTestFramework):
 
         # Mine a new block and let it propagate
         self.nodes[1].generate(1)
-        
+
         # Due to a bug in v1.0.0-1.0.3, node 0 will die with a tree root assertion, so sync_all() will throw an exception.
         self.sync_all()
-      
+
         # v1.0.4 will reach here safely
         assert_equal( self.nodes[0].getbestblockhash(), self.nodes[1].getbestblockhash())
         assert_equal( self.nodes[1].getbestblockhash(), self.nodes[2].getbestblockhash())

@@ -9,7 +9,7 @@ Minimum Difficulty Blocks allowed on testnet
 --------------------------------------------
 Sapling activated on testnet at block 280000. Users running v2.0.0 nodes should upgrade to v2.0.1 which introduces a consensus rule change to allow minimum difficulty blocks to be mined from block 299188, thereby splitting the chain.  In addition, users running v2.0.1 nodes no longer need to specify `-experimentalfeatures` and `-developersapling` to use Sapling functionality on testnet.
 
-[Pull request](https://github.com/zcash/zcash/pull/3559)
+[Pull request](https://github.com/zprimecoin/zprime/pull/3559)
 
 Hierarchical Deterministic Key Generation for Sapling
 -----------------------------------------------------
@@ -23,13 +23,13 @@ ones which haven't already been generated during the time of the backup.
 Regular backups are still necessary, however, in order to ensure that
 transparent and Sprout addresses are not lost.
 
-[Pull request](https://github.com/zcash/zcash/pull/3492), [ZIP 32](https://github.com/zcash/zips/blob/master/zip-0032.mediawiki)
+[Pull request](https://github.com/zprimecoin/zprime/pull/3492), [ZIP 32](https://github.com/zprimecoin/zips/blob/master/zip-0032.mediawiki)
 
 Fix Signing Raw Transactions with Unsynced Offline Nodes
 --------------------------------------------------------
-With v2.0.0, in `signrawtransaction` the consensus branch ID (which is used to construct the transaction) was estimated using the chain height. With v2.0.1 this has been improved by also considering the `APPROX_RELEASE_HEIGHT` of the release, and a new parameter to allow the caller to manually override the consensus branch ID that zcashd will use.
+With v2.0.0, in `signrawtransaction` the consensus branch ID (which is used to construct the transaction) was estimated using the chain height. With v2.0.1 this has been improved by also considering the `APPROX_RELEASE_HEIGHT` of the release, and a new parameter to allow the caller to manually override the consensus branch ID that zprimed will use.
 
-[Pull request](https://github.com/zcash/zcash/pull/3520)
+[Pull request](https://github.com/zprimecoin/zprime/pull/3520)
 
 
 Changelog
@@ -81,17 +81,17 @@ Jack Grigg (83):
       depends: Correctly configure Rust when cross-compiling
       depends: Configure librustzcash for cross-compiling
       depends: Fix BDB naming issue when cross-compiling
-      zcutil/build.sh: Use $HOST to specify the depends prefix
+      zputil/build.sh: Use $HOST to specify the depends prefix
       configure: Don't require RELRO and BIND_NOW when cross-compiling
       Measure Windows console size for metrics UI
       Use -O1 for darwin and mingw32 release builds
-      Clean up libzcash CPPFLAGS, CXXFLAGS, and LDFLAGS
-      zcutil/build.sh: Use config.site to set default ./configure settings
-      zcutil/build.sh: Remove --enable-werror from default configuration
+      Clean up libzprime CPPFLAGS, CXXFLAGS, and LDFLAGS
+      zputil/build.sh: Use config.site to set default ./configure settings
+      zputil/build.sh: Remove --enable-werror from default configuration
       Pass correct compiler, linker, and flags into libsnark
       Use boost::filesystem::path::string() instead of path::native()
       Metrics UI: Enable virtual terminal sequence processing on Windows
-      Metrics UI: Tell Windows users how to stop zcashd
+      Metrics UI: Tell Windows users how to stop zprimed
       depends: Pass correct compiler, linker, and flags into googletest
       configure: Don't add -ldl to RUST_LIBS for mingw32
       test: Fix comment in WalletTests.FindMySaplingNotes
@@ -162,9 +162,9 @@ Jay Graber (5):
       Modify GetNullifiersForAddresses for Sapling
 
 Jonas Schnelli (3):
-      [Wallet] extend CKeyMetadata with HD keypath     Zcash: modified for zip32
-      [Wallet] print hd masterkeyid in getwalletinfo     Zcash: modified for zip32
-      [Wallet] ensure CKeyMetadata.hdMasterKeyID will be cleared during SetNull()     Zcash: modified for zip32
+      [Wallet] extend CKeyMetadata with HD keypath     zPrime: modified for zip32
+      [Wallet] print hd masterkeyid in getwalletinfo     zPrime: modified for zip32
+      [Wallet] ensure CKeyMetadata.hdMasterKeyID will be cleared during SetNull()     zPrime: modified for zip32
 
 Jonathan "Duke" Leto (1):
       Fix some typos in rpc-tests readme

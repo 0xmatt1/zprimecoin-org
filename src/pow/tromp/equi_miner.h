@@ -1,5 +1,5 @@
 // Equihash solver
-// Copyright (c) 2016 John Tromp, The Zcash developers
+// Copyright (c) 2016 John Tromp, The zPrime developers
 
 // Fix N, K, such that n = N/(k+1) is integer
 // Fix M = 2^{n+1} hashes each of length N bits,
@@ -323,7 +323,7 @@ struct equi {
     u32 dunits;
     u32 prevbo;
     u32 nextbo;
-  
+
     htlayout(equi *eq, u32 r): hta(eq->hta), prevhashunits(0), dunits(0) {
       u32 nexthashbytes = hashsize(r);
       nexthashunits = hashwords(nexthashbytes);
@@ -466,7 +466,7 @@ struct equi {
       }
     }
   }
-  
+
   void digitodd(const u32 r, const u32 id) {
     htlayout htl(this, r);
     collisiondata cd;
@@ -518,7 +518,7 @@ struct equi {
       }
     }
   }
-  
+
   void digiteven(const u32 r, const u32 id) {
     htlayout htl(this, r);
     collisiondata cd;
@@ -570,7 +570,7 @@ struct equi {
       }
     }
   }
-  
+
   void digitK(const u32 id) {
     collisiondata cd;
     htlayout htl(this, WK);

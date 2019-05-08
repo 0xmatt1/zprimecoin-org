@@ -24,7 +24,7 @@ Daira Hopwood (22):
 
 David Mercer (4):
       explicitly pass HOST and BUILD to ./configure
-      allow both HOST and BUILD to be passed in from the zcutil/build.sh
+      allow both HOST and BUILD to be passed in from the zputil/build.sh
       pass in both HOST and BUILD to depends system, needed for deterministic builds
       explicitly pass HOST and BUILD to libgmp ./configure
 
@@ -37,8 +37,8 @@ Jack Grigg (31):
       Randomize JoinSplits in z_sendmany
       Refactor test code to better test JSDescription::Randomized()
       Remove stale comment
-      Rename libbitcoinconsensus to libzcashconsensus
-      Rename bitcoin-tx to zcash-tx
+      Rename libbitcoinconsensus to libzprimeconsensus
+      Rename bitcoin-tx to zprime-tx
       Remove the RC 1 block index error message
       Disable wallet encryption
       Add more assertions, throw if find_output params are invalid
@@ -65,9 +65,9 @@ Jack Grigg (31):
       Fix RPC test
 
 Jay Graber (7):
-      Rm bitcoin dev keys from gitian-downloader, add zcash dev keys
+      Rm bitcoin dev keys from gitian-downloader, add zprime dev keys
       Rm bips.md
-      Update files.md for zcash
+      Update files.md for zprime
       Update dnsseed-policy.md
       Developer notes still relevant
       Document RPC interface security assumptions in security-warnings.md

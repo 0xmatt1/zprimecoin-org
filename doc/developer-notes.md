@@ -107,7 +107,7 @@ on all categories (and give you a very large debug.log file).
 
 **testnet and regtest modes**
 
-Run with the -testnet option to run with "play zcash" on the test network, if you
+Run with the -testnet option to run with "play zprime" on the test network, if you
 are testing multi-machine code that needs to operate across the internet.
 
 If you are testing something that can run on one machine, run with the -regtest option.
@@ -116,7 +116,7 @@ that run in -regtest mode.
 
 **DEBUG_LOCKORDER**
 
-Zcash is a multithreaded application, and deadlocks or other multithreading bugs
+zPrime is a multithreaded application, and deadlocks or other multithreading bugs
 can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
 CXXFLAGS="-DDEBUG_LOCKORDER -g") inserts run-time checks to keep track of which locks
 are held, and adds warnings to the debug.log file if inconsistencies are detected.
@@ -165,7 +165,7 @@ Threads
 
 - ThreadRPCServer : Remote procedure call handler, listens on port 8232 for connections and services them.
 
-- ZcashMiner : Generates zcash (if wallet is enabled).
+- zPrimeMiner : Generates zprime (if wallet is enabled).
 
 - Shutdown : Does an orderly shutdown of everything.
 
@@ -182,4 +182,4 @@ ACK -  A loose ACK can be confusing. It's best to avoid them unless it's a docum
 
 NACK - Disagree with the code changes/concept. Should be accompanied by an explanation.
 
-See the [Development Guidelines](https://zcash.readthedocs.io/en/latest/rtd_pages/development_guidelines.html) documentation for preferred workflows, information on continuous integration and release versioning.
+See the [Development Guidelines](https://zprime.readthedocs.io/en/latest/rtd_pages/development_guidelines.html) documentation for preferred workflows, information on continuous integration and release versioning.

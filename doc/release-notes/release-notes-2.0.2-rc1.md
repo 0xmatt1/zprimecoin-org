@@ -7,7 +7,7 @@ Other issues
 Revoked key error when upgrading on Debian
 ------------------------------------------
 
-If you see the following error when updating to a new version of zcashd:
+If you see the following error when updating to a new version of zprimed:
 
 `The following signatures were invalid: REVKEYSIG AEFD26F966E279CD`
 
@@ -17,13 +17,13 @@ Remove the key marked as revoked:
 
 Then retrieve the updated key:
 
-`wget -qO - https://apt.z.cash/zcash.asc | sudo apt-key add -`
+`wget -qO - https://apt.z.cash/zprime.asc | sudo apt-key add -`
 
 Then update the package lists:
 
 `sudo apt-get update`
 
-[Issue](https://github.com/zcash/zcash/issues/3612)
+[Issue](https://github.com/zprimecoin/zprime/issues/3612)
 
 Changelog
 =========

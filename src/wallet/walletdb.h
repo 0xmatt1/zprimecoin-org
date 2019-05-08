@@ -10,8 +10,8 @@
 #include "wallet/db.h"
 #include "key.h"
 #include "keystore.h"
-#include "zcash/Address.hpp"
-#include "zcash/zip32.h"
+#include "zprime/Address.hpp"
+#include "zprime/zip32.h"
 
 #include <list>
 #include <stdint.h>
@@ -183,22 +183,22 @@ public:
     bool WriteHDChain(const CHDChain& chain);
 
     /// Write spending key to wallet database, where key is payment address and value is spending key.
-    bool WriteZKey(const libzcash::SproutPaymentAddress& addr, const libzcash::SproutSpendingKey& key, const CKeyMetadata &keyMeta);
-    bool WriteSaplingZKey(const libzcash::SaplingIncomingViewingKey &ivk,
-                          const libzcash::SaplingExtendedSpendingKey &key,
+    bool WriteZKey(const libzprime::SproutPaymentAddress& addr, const libzprime::SproutSpendingKey& key, const CKeyMetadata &keyMeta);
+    bool WriteSaplingZKey(const libzprime::SaplingIncomingViewingKey &ivk,
+                          const libzprime::SaplingExtendedSpendingKey &key,
                           const CKeyMetadata  &keyMeta);
-    bool WriteSaplingPaymentAddress(const libzcash::SaplingPaymentAddress &addr,
-                                    const libzcash::SaplingIncomingViewingKey &ivk);
-    bool WriteCryptedZKey(const libzcash::SproutPaymentAddress & addr,
-                          const libzcash::ReceivingKey & rk,
+    bool WriteSaplingPaymentAddress(const libzprime::SaplingPaymentAddress &addr,
+                                    const libzprime::SaplingIncomingViewingKey &ivk);
+    bool WriteCryptedZKey(const libzprime::SproutPaymentAddress & addr,
+                          const libzprime::ReceivingKey & rk,
                           const std::vector<unsigned char>& vchCryptedSecret,
                           const CKeyMetadata &keyMeta);
-    bool WriteCryptedSaplingZKey(const libzcash::SaplingExtendedFullViewingKey &extfvk,
+    bool WriteCryptedSaplingZKey(const libzprime::SaplingExtendedFullViewingKey &extfvk,
                           const std::vector<unsigned char>& vchCryptedSecret,
                           const CKeyMetadata &keyMeta);
 
-    bool WriteSproutViewingKey(const libzcash::SproutViewingKey &vk);
-    bool EraseSproutViewingKey(const libzcash::SproutViewingKey &vk);
+    bool WriteSproutViewingKey(const libzprime::SproutViewingKey &vk);
+    bool EraseSproutViewingKey(const libzprime::SproutViewingKey &vk);
 
 private:
     CWalletDB(const CWalletDB&);

@@ -58,7 +58,7 @@ CMutableTransaction GetValidTransaction() {
     mtx.vin[1].prevout.hash = uint256S("0000000000000000000000000000000000000000000000000000000000000002");
     mtx.vin[1].prevout.n = 0;
     mtx.vout.resize(2);
-    // mtx.vout[0].scriptPubKey = 
+    // mtx.vout[0].scriptPubKey =
     mtx.vout[0].nValue = 0;
     mtx.vout[1].nValue = 0;
     mtx.vjoinsplit.resize(2);
@@ -179,8 +179,8 @@ TEST(checktransaction_tests, BadTxnsOversize) {
         mtx.nVersion = SAPLING_TX_VERSION;
 
         // Change the proof types (which requires re-signing the JoinSplit data)
-        mtx.vjoinsplit[0].proof = libzcash::GrothProof();
-        mtx.vjoinsplit[1].proof = libzcash::GrothProof();
+        mtx.vjoinsplit[0].proof = libzprime::GrothProof();
+        mtx.vjoinsplit[1].proof = libzprime::GrothProof();
         CreateJoinSplitSignature(mtx, NetworkUpgradeInfo[Consensus::UPGRADE_SAPLING].nBranchId);
 
         CTransaction tx(mtx);
@@ -204,8 +204,8 @@ TEST(checktransaction_tests, OversizeSaplingTxns) {
     mtx.nVersion = SAPLING_TX_VERSION;
 
     // Change the proof types (which requires re-signing the JoinSplit data)
-    mtx.vjoinsplit[0].proof = libzcash::GrothProof();
-    mtx.vjoinsplit[1].proof = libzcash::GrothProof();
+    mtx.vjoinsplit[0].proof = libzprime::GrothProof();
+    mtx.vjoinsplit[1].proof = libzprime::GrothProof();
     CreateJoinSplitSignature(mtx, NetworkUpgradeInfo[Consensus::UPGRADE_SAPLING].nBranchId);
 
     // Transaction just under the limit
@@ -726,13 +726,13 @@ TEST(checktransaction_tests, SaplingSproutInputSumsTooLarge) {
         // create JSDescription
         uint256 rt;
         uint256 joinSplitPubKey;
-        std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS> inputs = {
-            libzcash::JSInput(),
-            libzcash::JSInput()
+        std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS> inputs = {
+            libzprime::JSInput(),
+            libzprime::JSInput()
         };
-        std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS> outputs = {
-            libzcash::JSOutput(),
-            libzcash::JSOutput()
+        std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS> outputs = {
+            libzprime::JSOutput(),
+            libzprime::JSOutput()
         };
         std::array<size_t, ZC_NUM_JS_INPUTS> inputMap;
         std::array<size_t, ZC_NUM_JS_OUTPUTS> outputMap;

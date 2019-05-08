@@ -4,7 +4,7 @@
 #include "utilmoneystr.h"
 #include "chainparams.h"
 #include "utilstrencodings.h"
-#include "zcash/Address.hpp"
+#include "zprime/Address.hpp"
 #include "wallet/wallet.h"
 #include "amount.h"
 #include <memory>
@@ -15,12 +15,12 @@
 #include "util.h"
 
 // To run tests:
-// ./zcash-gtest --gtest_filter="founders_reward_test.*"
+// ./zprime-gtest --gtest_filter="founders_reward_test.*"
 
 //
 // Enable this test to generate and print 48 testnet 2-of-3 multisig addresses.
 // The output can be copied into chainparams.cpp.
-// The temporary wallet file can be renamed as wallet.dat and used for testing with zcashd.
+// The temporary wallet file can be renamed as wallet.dat and used for testing with zprimed.
 //
 #if 0
 TEST(founders_reward_test, create_testnet_2of3multisig) {
@@ -33,7 +33,7 @@ TEST(founders_reward_test, create_testnet_2of3multisig) {
     ASSERT_EQ(DB_LOAD_OK, pWallet->LoadWallet(fFirstRun));
     pWallet->TopUpKeyPool();
     std::cout << "Test wallet and logs saved in folder: " << pathTemp.native() << std::endl;
-    
+
     int numKeys = 48;
     std::vector<CPubKey> pubkeys;
     pubkeys.resize(3);
@@ -61,7 +61,7 @@ TEST(founders_reward_test, create_testnet_2of3multisig) {
         std::string address = EncodeDestination(innerID);
         addresses.push_back(address);
     }
-    
+
     // Print out the addresses, 4 on each line.
     std::string s = "vFoundersRewardAddress = {\n";
     int i=0;
@@ -98,7 +98,7 @@ TEST(founders_reward_test, general) {
     SelectParams(CBaseChainParams::TESTNET);
 
     CChainParams params = Params();
-    
+
     // Fourth testnet reward:
     // address = t2ENg7hHVqqs9JwU5cgjvSbxnT2a9USNfhy
     // script.ToString() = OP_HASH160 55d64928e69829d9376c776550b6cc710d427153 OP_EQUAL
@@ -111,12 +111,12 @@ TEST(founders_reward_test, general) {
     EXPECT_EQ(params.GetFoundersRewardAddressAtHeight(53127), "t2ENg7hHVqqs9JwU5cgjvSbxnT2a9USNfhy");
 
     int maxHeight = params.GetConsensus().GetLastFoundersRewardBlockHeight();
-    
+
     // If the block height parameter is out of bounds, there is an assert.
     EXPECT_DEATH(params.GetFoundersRewardScriptAtHeight(0), "nHeight");
     EXPECT_DEATH(params.GetFoundersRewardScriptAtHeight(maxHeight+1), "nHeight");
     EXPECT_DEATH(params.GetFoundersRewardAddressAtHeight(0), "nHeight");
-    EXPECT_DEATH(params.GetFoundersRewardAddressAtHeight(maxHeight+1), "nHeight"); 
+    EXPECT_DEATH(params.GetFoundersRewardAddressAtHeight(maxHeight+1), "nHeight");
 }
 
 
@@ -151,13 +151,13 @@ TEST(founders_reward_test, slow_start_subsidy) {
     SelectParams(CBaseChainParams::MAIN);
     CChainParams params = Params();
 
-    int maxHeight = params.GetConsensus().GetLastFoundersRewardBlockHeight();    
+    int maxHeight = params.GetConsensus().GetLastFoundersRewardBlockHeight();
     CAmount totalSubsidy = 0;
     for (int nHeight = 1; nHeight <= maxHeight; nHeight++) {
         CAmount nSubsidy = GetBlockSubsidy(nHeight, params.GetConsensus()) / 5;
         totalSubsidy += nSubsidy;
     }
-    
+
     ASSERT_TRUE(totalSubsidy == MAX_MONEY/10.0);
 }
 

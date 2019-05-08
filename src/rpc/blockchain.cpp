@@ -51,7 +51,7 @@ double GetDifficultyINTERNAL(const CBlockIndex* blockindex, bool networkDifficul
     int nShiftAmount = (powLimit >> 24) & 0xff;
 
     double dDiff =
-        (double)(powLimit & 0x00ffffff) / 
+        (double)(powLimit & 0x00ffffff) /
         (double)(bits & 0x00ffffff);
 
     while (nShift < nShiftAmount)
@@ -565,8 +565,8 @@ UniValue gettxout(const UniValue& params, bool fHelp)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of Zcash addresses\n"
-            "        \"zcashaddress\"        (string) Zcash address\n"
+            "     \"addresses\" : [          (array of string) array of zPrime addresses\n"
+            "        \"zprimeaddress\"        (string) zPrime address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"

@@ -7,7 +7,7 @@
 #include "rpc/protocol.h"
 #include "transaction_builder.h"
 #include "utiltest.h"
-#include "zcash/Address.hpp"
+#include "zprime/Address.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -81,14 +81,14 @@ TEST(TransactionBuilder, TransparentToSapling)
     CKey tsk = AddTestCKeyToKeyStore(keystore);
     auto scriptPubKey = GetScriptForDestination(tsk.GetPubKey().GetID());
 
-    auto sk_from = libzcash::SaplingSpendingKey::random();
+    auto sk_from = libzprime::SaplingSpendingKey::random();
     auto fvk_from = sk_from.full_viewing_key();
 
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto fvk = sk.full_viewing_key();
     auto ivk = fvk.in_viewing_key();
-    libzcash::diversifier_t d = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    libzprime::diversifier_t d = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     auto pk = *ivk.address(d);
 
     // Create a shielding transaction from transparent to Sapling
@@ -116,13 +116,13 @@ TEST(TransactionBuilder, TransparentToSapling)
 TEST(TransactionBuilder, SaplingToSapling) {
     auto consensusParams = RegtestActivateSapling();
 
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto fvk = sk.full_viewing_key();
     auto pa = sk.default_address();
 
     auto testNote = GetTestSaplingNote(pa, 40000);
-    
+
     // Create a Sapling-only transaction
     // 0.0004 z-ZEC in, 0.00025 z-ZEC out, 0.0001 t-ZEC fee, 0.00005 z-ZEC change
     auto builder = TransactionBuilder(consensusParams, 2);
@@ -153,13 +153,13 @@ TEST(TransactionBuilder, SaplingToSapling) {
 TEST(TransactionBuilder, SaplingToSprout) {
     auto consensusParams = RegtestActivateSapling();
 
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto pa = sk.default_address();
 
     auto testNote = GetTestSaplingNote(pa, 40000);
 
-    auto sproutSk = libzcash::SproutSpendingKey::random();
+    auto sproutSk = libzprime::SproutSpendingKey::random();
     auto sproutAddr = sproutSk.address();
 
     // Create a Sapling-to-Sprout transaction (reusing the note from above)
@@ -191,16 +191,16 @@ TEST(TransactionBuilder, SaplingToSprout) {
 TEST(TransactionBuilder, SproutToSproutAndSapling) {
     auto consensusParams = RegtestActivateSapling();
 
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto fvk = sk.full_viewing_key();
     auto pa = sk.default_address();
 
-    auto sproutSk = libzcash::SproutSpendingKey::random();
+    auto sproutSk = libzprime::SproutSpendingKey::random();
     auto sproutAddr = sproutSk.address();
 
     auto wtx = GetValidSproutReceive(*params, sproutSk, 25000, true);
     auto sproutNote = GetSproutNote(*params, sproutSk, wtx, 0, 1);
-    
+
     SproutMerkleTree sproutTree;
     for (int i = 0; i < ZC_NUM_JS_OUTPUTS; i++) {
         sproutTree.append(wtx.vjoinsplit[0].commitments[i]);
@@ -252,7 +252,7 @@ TEST(TransactionBuilder, SproutToSproutAndSapling) {
 TEST(TransactionBuilder, ThrowsOnSproutOutputWithoutParams)
 {
     auto consensusParams = Params().GetConsensus();
-    auto sk = libzcash::SproutSpendingKey::random();
+    auto sk = libzprime::SproutSpendingKey::random();
     auto addr = sk.address();
 
     auto builder = TransactionBuilder(consensusParams, 1);
@@ -295,7 +295,7 @@ TEST(TransactionBuilder, FailsWithNegativeChange)
     auto consensusParams = RegtestActivateSapling();
 
     // Generate dummy Sapling address
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto fvk = sk.full_viewing_key();
     auto pa = sk.default_address();
@@ -339,14 +339,14 @@ TEST(TransactionBuilder, ChangeOutput)
     auto consensusParams = RegtestActivateSapling();
 
     // Generate dummy Sapling address
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto pa = sk.default_address();
 
     auto testNote = GetTestSaplingNote(pa, 25000);
 
     // Generate change Sapling address
-    auto sk2 = libzcash::SaplingSpendingKey::random();
+    auto sk2 = libzprime::SaplingSpendingKey::random();
     auto fvkOut = sk2.full_viewing_key();
     auto zChangeAddr = sk2.default_address();
 
@@ -419,7 +419,7 @@ TEST(TransactionBuilder, SetFee)
     auto consensusParams = RegtestActivateSapling();
 
     // Generate dummy Sapling address
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto fvk = sk.full_viewing_key();
     auto pa = sk.default_address();
@@ -467,7 +467,7 @@ TEST(TransactionBuilder, CheckSaplingTxVersion)
     UpdateNetworkUpgradeParameters(Consensus::UPGRADE_OVERWINTER, Consensus::NetworkUpgrade::ALWAYS_ACTIVE);
     auto consensusParams = Params().GetConsensus();
 
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto pk = sk.default_address();
 
@@ -482,7 +482,7 @@ TEST(TransactionBuilder, CheckSaplingTxVersion)
     }
 
     // Cannot add Sapling spends to a non-Sapling transaction
-    libzcash::SaplingNote note(pk, 50000);
+    libzprime::SaplingNote note(pk, 50000);
     SaplingMerkleTree tree;
     try {
         builder.AddSaplingSpend(expsk, note, uint256(), tree.witness());

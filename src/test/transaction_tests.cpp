@@ -35,9 +35,9 @@
 
 #include <univalue.h>
 
-#include "zcash/Note.hpp"
-#include "zcash/Address.hpp"
-#include "zcash/Proof.hpp"
+#include "zprime/Note.hpp"
+#include "zprime/Address.hpp"
+#include "zprime/Proof.hpp"
 
 using namespace std;
 
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(tx_valid)
     UniValue tests = read_json(std::string(json_tests::tx_valid, json_tests::tx_valid + sizeof(json_tests::tx_valid)));
     std::string comment("");
 
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
     ScriptError err;
     for (size_t idx = 0; idx < tests.size(); idx++) {
         UniValue test = tests[idx];
@@ -195,7 +195,7 @@ BOOST_AUTO_TEST_CASE(tx_invalid)
     UniValue tests = read_json(std::string(json_tests::tx_invalid, json_tests::tx_invalid + sizeof(json_tests::tx_invalid)));
     std::string comment("");
 
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
     ScriptError err;
     for (size_t idx = 0; idx < tests.size(); idx++) {
         UniValue test = tests[idx];
@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE(basic_transaction_tests)
     CMutableTransaction tx;
     stream >> tx;
     CValidationState state;
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
     BOOST_CHECK_MESSAGE(CheckTransaction(tx, state, verifier) && state.IsValid(), "Simple deserialized transaction should be valid.");
 
     // Check that duplicate txins fail
@@ -337,16 +337,16 @@ BOOST_AUTO_TEST_CASE(test_basic_joinsplit_verification)
     // on all platforms and would gently push us down an ugly
     // path. We should just fix the assertions.
     //
-    // Also, it's generally libzcash's job to ensure the
+    // Also, it's generally libzprime's job to ensure the
     // integrity of the scheme through its own tests.
 
     // construct a merkle tree
     SproutMerkleTree merkleTree;
 
-    auto k = libzcash::SproutSpendingKey::random();
+    auto k = libzprime::SproutSpendingKey::random();
     auto addr = k.address();
 
-    libzcash::SproutNote note(addr.a_pk, 100, uint256(), uint256());
+    libzprime::SproutNote note(addr.a_pk, 100, uint256(), uint256());
 
     // commitment from coin
     uint256 commitment = note.cm();
@@ -361,20 +361,20 @@ BOOST_AUTO_TEST_CASE(test_basic_joinsplit_verification)
 
     // create JSDescription
     uint256 joinSplitPubKey;
-    std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS> inputs = {
-        libzcash::JSInput(witness, note, k),
-        libzcash::JSInput() // dummy input of zero value
+    std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS> inputs = {
+        libzprime::JSInput(witness, note, k),
+        libzprime::JSInput() // dummy input of zero value
     };
-    std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS> outputs = {
-        libzcash::JSOutput(addr, 50),
-        libzcash::JSOutput(addr, 50)
+    std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS> outputs = {
+        libzprime::JSOutput(addr, 50),
+        libzprime::JSOutput(addr, 50)
     };
 
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
 
     {
-        JSDescription jsdesc(false, *pzcashParams, joinSplitPubKey, rt, inputs, outputs, 0, 0);
-        BOOST_CHECK(jsdesc.Verify(*pzcashParams, verifier, joinSplitPubKey));
+        JSDescription jsdesc(false, *pzprimeParams, joinSplitPubKey, rt, inputs, outputs, 0, 0);
+        BOOST_CHECK(jsdesc.Verify(*pzprimeParams, verifier, joinSplitPubKey));
 
         CDataStream ss(SER_DISK, CLIENT_VERSION);
         ss << jsdesc;
@@ -383,20 +383,20 @@ BOOST_AUTO_TEST_CASE(test_basic_joinsplit_verification)
         ss >> jsdesc_deserialized;
 
         BOOST_CHECK(jsdesc_deserialized == jsdesc);
-        BOOST_CHECK(jsdesc_deserialized.Verify(*pzcashParams, verifier, joinSplitPubKey));
+        BOOST_CHECK(jsdesc_deserialized.Verify(*pzprimeParams, verifier, joinSplitPubKey));
     }
 
     {
         // Ensure that the balance equation is working.
-        BOOST_CHECK_THROW(JSDescription(false, *pzcashParams, joinSplitPubKey, rt, inputs, outputs, 10, 0), std::invalid_argument);
-        BOOST_CHECK_THROW(JSDescription(false, *pzcashParams, joinSplitPubKey, rt, inputs, outputs, 0, 10), std::invalid_argument);
+        BOOST_CHECK_THROW(JSDescription(false, *pzprimeParams, joinSplitPubKey, rt, inputs, outputs, 10, 0), std::invalid_argument);
+        BOOST_CHECK_THROW(JSDescription(false, *pzprimeParams, joinSplitPubKey, rt, inputs, outputs, 0, 10), std::invalid_argument);
     }
 
     {
         // Ensure that it won't verify if the root is changed.
-        auto test = JSDescription(false, *pzcashParams, joinSplitPubKey, rt, inputs, outputs, 0, 0);
+        auto test = JSDescription(false, *pzprimeParams, joinSplitPubKey, rt, inputs, outputs, 0, 0);
         test.anchor = GetRandHash();
-        BOOST_CHECK(!test.Verify(*pzcashParams, verifier, joinSplitPubKey));
+        BOOST_CHECK(!test.Verify(*pzprimeParams, verifier, joinSplitPubKey));
     }
 }
 
@@ -465,7 +465,7 @@ void test_simple_sapling_invalidity(uint32_t consensusBranchId, CMutableTransact
 
 void test_simple_joinsplit_invalidity(uint32_t consensusBranchId, CMutableTransaction tx)
 {
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
     {
         // Ensure that empty vin/vout remain invalid without
         // joinsplits.
@@ -513,7 +513,7 @@ void test_simple_joinsplit_invalidity(uint32_t consensusBranchId, CMutableTransa
         CValidationState state;
 
         newTx.vjoinsplit.push_back(JSDescription());
-        
+
         JSDescription *jsdesc = &newTx.vjoinsplit[0];
         jsdesc->vpub_old = -1;
 

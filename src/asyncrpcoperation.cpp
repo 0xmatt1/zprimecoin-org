@@ -1,4 +1,4 @@
-// Copyright (c) 2016 The Zcash developers
+// Copyright (c) 2016 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -91,7 +91,7 @@ void AsyncRPCOperation::main() {
     if (isCancelled()) {
         return;
     }
-    
+
     set_state(OperationStatus::EXECUTING);
 
     start_execution_clock();

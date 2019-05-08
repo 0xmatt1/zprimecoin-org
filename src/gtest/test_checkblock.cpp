@@ -4,7 +4,7 @@
 #include "consensus/validation.h"
 #include "main.h"
 #include "utiltest.h"
-#include "zcash/Proof.hpp"
+#include "zprime/Proof.hpp"
 
 class MockCValidationState : public CValidationState {
 public:
@@ -24,7 +24,7 @@ public:
 };
 
 TEST(CheckBlock, VersionTooLow) {
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
 
     CBlock block;
     block.nVersion = 1;
@@ -61,7 +61,7 @@ TEST(CheckBlock, BlockSproutRejectsBadVersion) {
     MockCValidationState state;
     CBlockIndex indexPrev {Params().GenesisBlock()};
 
-    auto verifier = libzcash::ProofVerifier::Strict();
+    auto verifier = libzprime::ProofVerifier::Strict();
 
     EXPECT_CALL(state, DoS(100, false, REJECT_INVALID, "bad-txns-version-too-low", false)).Times(1);
     EXPECT_FALSE(CheckBlock(block, state, verifier, false, false));

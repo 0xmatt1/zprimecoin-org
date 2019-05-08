@@ -184,11 +184,11 @@ void static RandomTransaction(CMutableTransaction &tx, bool fSingle, uint32_t co
             randombytes_buf(jsdesc.ciphertexts[0].begin(), jsdesc.ciphertexts[0].size());
             randombytes_buf(jsdesc.ciphertexts[1].begin(), jsdesc.ciphertexts[1].size());
             if (tx.fOverwintered && tx.nVersion >= SAPLING_TX_VERSION) {
-                libzcash::GrothProof zkproof;
+                libzprime::GrothProof zkproof;
                 randombytes_buf(zkproof.begin(), zkproof.size());
                 jsdesc.proof = zkproof;
             } else {
-                jsdesc.proof = libzcash::PHGRProof::random_invalid();
+                jsdesc.proof = libzprime::PHGRProof::random_invalid();
             }
             jsdesc.macs[0] = GetRandHash();
             jsdesc.macs[1] = GetRandHash();

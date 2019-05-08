@@ -2,7 +2,7 @@
 #include "crypto/common.h"
 #include "key.h"
 #include "pubkey.h"
-#include "zcash/JoinSplit.hpp"
+#include "zprime/JoinSplit.hpp"
 #include "util.h"
 
 #include <libsnark/common/default_types/r1cs_ppzksnark_pp.hpp>
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
     );
 
   testing::InitGoogleMock(&argc, argv);
-  
+
   auto ret = RUN_ALL_TESTS();
 
   ECC_Stop();

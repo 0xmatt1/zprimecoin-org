@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Zcash developers
+// Copyright (c) 2017 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,8 +11,8 @@
 #include "transaction_builder.h"
 #include "wallet.h"
 #include "wallet/paymentdisclosure.h"
-#include "zcash/Address.hpp"
-#include "zcash/JoinSplit.hpp"
+#include "zprime/Address.hpp"
+#include "zprime/JoinSplit.hpp"
 
 #include <array>
 #include <tuple>
@@ -23,7 +23,7 @@
 // Default transaction fee if caller does not specify one.
 #define MERGE_TO_ADDRESS_OPERATION_DEFAULT_MINERS_FEE 10000
 
-using namespace libzcash;
+using namespace libzprime;
 
 // Input UTXO is a tuple of txid, vout, amount, script
 typedef std::tuple<COutPoint, CAmount, CScript> MergeToAddressInputUTXO;
@@ -84,7 +84,7 @@ private:
     friend class TEST_FRIEND_AsyncRPCOperation_mergetoaddress; // class for unit testing
 
     UniValue contextinfo_; // optional data to include in return value from getStatus()
-    
+
     bool isUsingBuilder_; // Indicates that no Sprout addresses are involved
     uint32_t consensusBranchId_;
     CAmount fee_;

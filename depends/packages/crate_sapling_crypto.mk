@@ -1,6 +1,6 @@
 package=crate_sapling_crypto
 $(package)_crate_name=sapling-crypto
-$(package)_download_path=https://github.com/zcash-hackworks/$($(package)_crate_name)/archive/
+$(package)_download_path=https://github.com/zprimecoin-hackworks/$($(package)_crate_name)/archive/
 $(package)_file_name=$(package)-$($(package)_git_commit).tar.gz
 $(package)_download_file=$($(package)_git_commit).tar.gz
 $(package)_sha256_hash=ae3a122b1f1ce97b4e80e0e8542e19aa1516e99e6c72875688c886af1a881558

@@ -1,4 +1,4 @@
-// Copyright (c) 2016 The Zcash developers
+// Copyright (c) 2016 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -224,7 +224,7 @@ void AsyncRPCQueue::wait_for_worker_threads() {
         std::lock_guard<std::mutex> guard(lock_);
         this->condition_.notify_all();
     }
-        
+
     for (std::thread & t : this->workers_) {
         if (t.joinable()) {
             t.join();

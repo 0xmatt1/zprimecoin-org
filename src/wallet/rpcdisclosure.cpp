@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Zcash developers
+// Copyright (c) 2017 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,11 +23,11 @@
 
 #include <univalue.h>
 
-#include "zcash/Note.hpp"
-#include "zcash/NoteEncryption.hpp"
+#include "zprime/Note.hpp"
+#include "zprime/NoteEncryption.hpp"
 
 using namespace std;
-using namespace libzcash;
+using namespace libzprime;
 
 // Function declaration for function implemented in wallet/rpcwallet.cpp
 bool EnsureWalletIsAvailable(bool avoidException);
@@ -99,7 +99,7 @@ UniValue z_getpaymentdisclosure(const UniValue& params, bool fHelp)
 
     // Check if shielded tx
     if (wtx.vjoinsplit.empty()) {
-        throw JSONRPCError(RPC_MISC_ERROR, "Transaction is not a shielded transaction");        
+        throw JSONRPCError(RPC_MISC_ERROR, "Transaction is not a shielded transaction");
     }
 
     // Check js_index
@@ -195,7 +195,7 @@ UniValue z_validatepaymentdisclosure(const UniValue& params, bool fHelp)
         // too much data is ignored, but if not enough data, exception of type ios_base::failure is thrown,
         // CBaseDataStream::read(): end of data: iostream error
     } catch (const std::exception &e) {
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, payment disclosure data is malformed.");        
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, payment disclosure data is malformed.");
     }
 
     if (pd.payload.marker != PAYMENT_DISCLOSURE_PAYLOAD_MAGIC_BYTES) {
@@ -221,7 +221,7 @@ UniValue z_validatepaymentdisclosure(const UniValue& params, bool fHelp)
 
     // Check if shielded tx
     if (tx.vjoinsplit.empty()) {
-        throw JSONRPCError(RPC_MISC_ERROR, "Transaction is not a shielded transaction");        
+        throw JSONRPCError(RPC_MISC_ERROR, "Transaction is not a shielded transaction");
     }
 
     UniValue errs(UniValue::VARR);
@@ -250,9 +250,9 @@ UniValue z_validatepaymentdisclosure(const UniValue& params, bool fHelp)
         tx.joinSplitPubKey.begin()) == 0);
     o.push_back(Pair("signatureVerified", sigVerified));
     if (!sigVerified) {
-        errs.push_back("Payment disclosure signature does not match transaction signature");        
+        errs.push_back("Payment disclosure signature does not match transaction signature");
     }
-   
+
     // Check the payment address is valid
     SproutPaymentAddress zaddr = pd.payload.zaddr;
     {
@@ -261,7 +261,7 @@ UniValue z_validatepaymentdisclosure(const UniValue& params, bool fHelp)
         try {
             // Decrypt the note to get value and memo field
             JSDescription jsdesc = tx.vjoinsplit[pd.payload.js];
-            uint256 h_sig = jsdesc.h_sig(*pzcashParams, tx.joinSplitPubKey);
+            uint256 h_sig = jsdesc.h_sig(*pzprimeParams, tx.joinSplitPubKey);
 
             ZCPaymentDisclosureNoteDecryption decrypter;
 
@@ -278,7 +278,7 @@ UniValue z_validatepaymentdisclosure(const UniValue& params, bool fHelp)
             string memoHexString = HexStr(npt.memo().data(), npt.memo().data() + npt.memo().size());
             o.push_back(Pair("memo", memoHexString));
             o.push_back(Pair("value", ValueFromAmount(npt.value())));
-            
+
             // Check the blockchain commitment matches decrypted note commitment
             uint256 cm_blockchain =  jsdesc.commitments[pd.payload.n];
             SproutNote note = npt.note(zaddr);

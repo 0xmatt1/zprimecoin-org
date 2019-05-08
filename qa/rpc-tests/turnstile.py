@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2019 The Zcash developers
+# Copyright (c) 2019 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,13 +17,13 @@
 # when experimental feature -developersetpoolsizezero is switched on.
 #
 # To perform a manual turnstile test on testnet:
-# 1. Launch zcashd
+# 1. Launch zprimed
 # 2. Shield transparent funds
 # 3. Wait for transaction to be mined
-# 4. Restart zcashd, enabling experimental feature -developersetpoolsizezero
+# 4. Restart zprimed, enabling experimental feature -developersetpoolsizezero
 # 5. Unshield funds
 # 6. Wait for transaction to be mined (using testnet explorer or another node)
-# 7. Verify zcashd rejected the block
+# 7. Verify zprimed rejected the block
 #
 
 import sys; assert sys.version_info < (3,), ur"This script does not run under Python 3. Please use Python 2.7.x."
@@ -156,7 +156,7 @@ class TurnstileTest (BitcoinTestFramework):
         self.nodes[1].generate(1)
         newhash = self.nodes[1].getbestblockhash()
 
-        # Verify block contains the unshielding transaction 
+        # Verify block contains the unshielding transaction
         assert(mytxid in self.nodes[1].getblock(newhash)["tx"])
 
         # Verify nodes 1 and 2 have accepted the block as valid

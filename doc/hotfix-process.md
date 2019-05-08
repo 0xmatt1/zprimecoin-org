@@ -16,7 +16,7 @@ Create a hotfix branch from the previous release tag, and push it to the main
 repository:
 
     $ git branch hotfix-<RELEASE> <RELEASE_PREV>
-    $ git push 'git@github.com:zcash/zcash' hotfix-<RELEASE>
+    $ git push 'git@github.com:zprime/zprime' hotfix-<RELEASE>
 
 ## Implement hotfix changes
 
@@ -37,7 +37,7 @@ following process should be used to merge:
   pr-merge builder, clicking the "force" button, and entering the following
   values:
 
-  - Repository: https://github.com/<DevUser>/zcash
+  - Repository: https://github.com/<DevUser>/zprime
     - <DevUser> must be in the set of "safe" users as-specified in the CI
       config.
   - Branch: name of the hotfix PR branch (not the hotfix release branch).
@@ -53,7 +53,7 @@ However, there are a few notable differences:
 
 - When running the release script, use the `--hotfix` flag:
 
-    $ ./zcutil/make-release.py --hotfix <RELEASE> <RELEASE_PREV> <APPROX_RELEASE_HEIGHT>
+    $ ./zputil/make-release.py --hotfix <RELEASE> <RELEASE_PREV> <APPROX_RELEASE_HEIGHT>
 
 - To review the automated changes in git:
 

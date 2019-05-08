@@ -1,5 +1,5 @@
 Jack Grigg (5):
-      Add --disable-tests flag to zcutils/build.sh
+      Add --disable-tests flag to zputils/build.sh
       Correctly set CNoteData::witnessHeight when decrementing witness caches
       Copy over CNoteData::witnessHeight when updating wallet tx
       Add code comments about CNoteData::witnessHeight
@@ -7,7 +7,7 @@ Jack Grigg (5):
 
 Jay Graber (4):
       Document z_sendmany error code messages in payment-api.md
-      s/Bitcoin/Zcash in JSONRPCError
+      s/Bitcoin/zPrime in JSONRPCError
       Change format of z_sendmany error code documentation.
       Release-notes.py script to generate release notes and add contributors to authors.md
 

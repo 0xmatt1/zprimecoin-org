@@ -1,9 +1,9 @@
-// Copyright (c) 2017 The Zcash developers
+// Copyright (c) 2017 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef ZCASH_PAYMENTDISCLOSUREDB_H
-#define ZCASH_PAYMENTDISCLOSUREDB_H
+#ifndef ZPRIME_PAYMENTDISCLOSUREDB_H
+#define ZPRIME_PAYMENTDISCLOSUREDB_H
 
 #include <wallet/paymentdisclosure.h>
 
@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif // ZCASH_PAYMENTDISCLOSUREDB_H
+#endif // ZPRIME_PAYMENTDISCLOSUREDB_H

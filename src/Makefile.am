@@ -36,7 +36,7 @@ LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 LIBSNARK=snark/libsnark.a
 LIBUNIVALUE=univalue/libunivalue.la
-LIBZCASH=libzcash.a
+LIBZPRIME=libzprime.a
 
 if ENABLE_ZMQ
 LIBBITCOIN_ZMQ=libbitcoin_zmq.a
@@ -45,7 +45,7 @@ if ENABLE_PROTON
 LIBBITCOIN_PROTON=libbitcoin_proton.a
 endif
 if BUILD_BITCOIN_LIBS
-LIBZCASH_CONSENSUS=libzcashconsensus.la
+LIBZPRIME_CONSENSUS=libzprimeconsensus.la
 endif
 if ENABLE_WALLET
 LIBBITCOIN_WALLET=libbitcoin_wallet.a
@@ -83,33 +83,33 @@ EXTRA_LIBRARIES += \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_PROTON) \
-  $(LIBZCASH)
+  $(LIBZPRIME)
 
-lib_LTLIBRARIES = $(LIBZCASH_CONSENSUS)
+lib_LTLIBRARIES = $(LIBZPRIME_CONSENSUS)
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
 TESTS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += zcashd
+  bin_PROGRAMS += zprimed
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += zcash-cli zcash-tx
+  bin_PROGRAMS += zprime-cli zprime-tx
 endif
 
-LIBZCASH_H = \
-  zcash/IncrementalMerkleTree.hpp \
-  zcash/NoteEncryption.hpp \
-  zcash/Address.hpp \
-  zcash/JoinSplit.hpp \
-  zcash/Note.hpp \
-  zcash/prf.h \
-  zcash/Proof.hpp \
-  zcash/util.h \
-  zcash/Zcash.h \
-  zcash/zip32.h
+LIBZPRIME_H = \
+  zprime/IncrementalMerkleTree.hpp \
+  zprime/NoteEncryption.hpp \
+  zprime/Address.hpp \
+  zprime/JoinSplit.hpp \
+  zprime/Note.hpp \
+  zprime/prf.h \
+  zprime/Proof.hpp \
+  zprime/util.h \
+  zprime/zPrime.h \
+  zprime/zip32.h
 
 .PHONY: FORCE collate-libsnark check-symbols check-security
 # bitcoin core #
@@ -240,7 +240,7 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: zcashd
+# server: zprimed
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -280,7 +280,7 @@ libbitcoin_server_a_SOURCES = \
   txmempool.cpp \
   validationinterface.cpp \
   $(BITCOIN_CORE_H) \
-  $(LIBZCASH_H)
+  $(LIBZPRIME_H)
 
 if ENABLE_ZMQ
 libbitcoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
@@ -300,7 +300,7 @@ libbitcoin_proton_a_SOURCES = \
   amqp/amqppublishnotifier.cpp
 endif
 
-# wallet: zcashd, but only linked when wallet enabled
+# wallet: zprimed, but only linked when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_wallet_a_SOURCES = \
@@ -321,7 +321,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/wallet_ismine.cpp \
   wallet/walletdb.cpp \
   $(BITCOIN_CORE_H) \
-  $(LIBZCASH_H)
+  $(LIBZPRIME_H)
 
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES)
@@ -356,7 +356,7 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   ${EQUIHASH_TROMP_SOURCES}
 endif
 
-# common: shared between zcashd and non-server tools
+# common: shared between zprimed and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -388,7 +388,7 @@ libbitcoin_common_a_SOURCES = \
   transaction_builder.cpp \
   utiltest.cpp \
   $(BITCOIN_CORE_H) \
-  $(LIBZCASH_H)
+  $(LIBZPRIME_H)
 
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
@@ -412,34 +412,34 @@ libbitcoin_util_a_SOURCES = \
   utilstrencodings.cpp \
   utiltime.cpp \
   $(BITCOIN_CORE_H) \
-  $(LIBZCASH_H)
+  $(LIBZPRIME_H)
 
 if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: zcash-cli
+# cli: zprime-cli
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
   rpc/client.cpp \
   $(BITCOIN_CORE_H) \
-  $(LIBZCASH_H)
+  $(LIBZPRIME_H)
 
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-zcashd_SOURCES = bitcoind.cpp
-zcashd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-zcashd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-zcashd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+zprimed_SOURCES = bitcoind.cpp
+zprimed_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+zprimed_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+zprimed_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-zcashd_SOURCES += bitcoind-res.rc
+zprimed_SOURCES += bitcoind-res.rc
 endif
 
-zcashd_LDADD = \
+zprimed_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_COMMON) \
@@ -448,13 +448,13 @@ zcashd_LDADD = \
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_PROTON) \
   $(LIBBITCOIN_CRYPTO) \
-  $(LIBZCASH) \
+  $(LIBZPRIME) \
   $(LIBSNARK) \
   $(LIBLEVELDB) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-zcashd_LDADD += \
+zprimed_LDADD += \
   $(BOOST_LIBS) \
   $(BDB_LIBS) \
   $(SSL_LIBS) \
@@ -464,19 +464,19 @@ zcashd_LDADD += \
   $(ZMQ_LIBS) \
   $(PROTON_LIBS) \
   $(LIBBITCOIN_CRYPTO) \
-  $(LIBZCASH_LIBS)
+  $(LIBZPRIME_LIBS)
 
 # bitcoin-cli binary #
-zcash_cli_SOURCES = bitcoin-cli.cpp
-zcash_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-zcash_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-zcash_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+zprime_cli_SOURCES = bitcoin-cli.cpp
+zprime_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+zprime_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+zprime_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-zcash_cli_SOURCES += bitcoin-cli-res.rc
+zprime_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-zcash_cli_LDADD = \
+zprime_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
@@ -484,64 +484,64 @@ zcash_cli_LDADD = \
   $(SSL_LIBS) \
   $(CRYPTO_LIBS) \
   $(EVENT_LIBS) \
-  $(LIBZCASH) \
+  $(LIBZPRIME) \
   $(LIBSNARK) \
   $(LIBBITCOIN_CRYPTO) \
-  $(LIBZCASH_LIBS)
+  $(LIBZPRIME_LIBS)
 #
 
-# zcash-tx binary #
-zcash_tx_SOURCES = bitcoin-tx.cpp
-zcash_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-zcash_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-zcash_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# zprime-tx binary #
+zprime_tx_SOURCES = bitcoin-tx.cpp
+zprime_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+zprime_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+zprime_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-zcash_tx_SOURCES += bitcoin-tx-res.rc
+zprime_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
-# FIXME: Is libzcash needed for zcash_tx?
-zcash_tx_LDADD = \
+# FIXME: Is libzprime needed for zprime_tx?
+zprime_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
   $(LIBSECP256K1) \
-  $(LIBZCASH) \
+  $(LIBZPRIME) \
   $(LIBSNARK) \
   $(LIBBITCOIN_CRYPTO) \
-  $(LIBZCASH_LIBS)
+  $(LIBZPRIME_LIBS)
 
-zcash_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+zprime_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
-# zcash protocol primitives #
-libzcash_a_SOURCES = \
-  zcash/IncrementalMerkleTree.cpp \
-  zcash/NoteEncryption.cpp \
-  zcash/Address.cpp \
-  zcash/JoinSplit.cpp \
-  zcash/Proof.cpp \
-  zcash/Note.cpp \
-  zcash/prf.cpp \
-  zcash/util.cpp \
-  zcash/zip32.cpp \
-  zcash/circuit/commitment.tcc \
-  zcash/circuit/gadget.tcc \
-  zcash/circuit/merkle.tcc \
-  zcash/circuit/note.tcc \
-  zcash/circuit/prfs.tcc \
-  zcash/circuit/utils.tcc
+# zprime protocol primitives #
+libzprime_a_SOURCES = \
+  zprime/IncrementalMerkleTree.cpp \
+  zprime/NoteEncryption.cpp \
+  zprime/Address.cpp \
+  zprime/JoinSplit.cpp \
+  zprime/Proof.cpp \
+  zprime/Note.cpp \
+  zprime/prf.cpp \
+  zprime/util.cpp \
+  zprime/zip32.cpp \
+  zprime/circuit/commitment.tcc \
+  zprime/circuit/gadget.tcc \
+  zprime/circuit/merkle.tcc \
+  zprime/circuit/note.tcc \
+  zprime/circuit/prfs.tcc \
+  zprime/circuit/utils.tcc
 
-libzcash_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIC_FLAGS) -DBINARY_OUTPUT -DCURVE_ALT_BN128 -DBOOST_SPIRIT_THREADSAFE -fvisibility=hidden -DSTATIC $(BITCOIN_INCLUDES)
-libzcash_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libzcash_a_LDFLAGS = $(AM_LDFLAGS)
+libzprime_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIC_FLAGS) -DBINARY_OUTPUT -DCURVE_ALT_BN128 -DBOOST_SPIRIT_THREADSAFE -fvisibility=hidden -DSTATIC $(BITCOIN_INCLUDES)
+libzprime_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libzprime_a_LDFLAGS = $(AM_LDFLAGS)
 
-libzcash_a_CPPFLAGS += -DMONTGOMERY_OUTPUT
+libzprime_a_CPPFLAGS += -DMONTGOMERY_OUTPUT
 
-# zcashconsensus library #
+# zprimeconsensus library #
 if BUILD_BITCOIN_LIBS
-include_HEADERS = script/zcashconsensus.h
-libzcashconsensus_la_SOURCES = \
+include_HEADERS = script/zprimeconsensus.h
+libzprimeconsensus_la_SOURCES = \
   crypto/equihash.cpp \
   crypto/hmac_sha512.cpp \
   crypto/ripemd160.cpp \
@@ -551,20 +551,20 @@ libzcashconsensus_la_SOURCES = \
   hash.cpp \
   primitives/transaction.cpp \
   pubkey.cpp \
-  script/zcashconsensus.cpp \
+  script/zprimeconsensus.cpp \
   script/interpreter.cpp \
   script/script.cpp \
   uint256.cpp \
   utilstrencodings.cpp
 
 if GLIBC_BACK_COMPAT
-  libzcashconsensus_la_SOURCES += compat/glibc_compat.cpp
+  libzprimeconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libzcashconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libzcashconsensus_la_LIBADD = $(LIBSECP256K1)
-libzcashconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
-libzcashconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libzprimeconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+libzprimeconsensus_la_LIBADD = $(LIBSECP256K1)
+libzprimeconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libzprimeconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
 #

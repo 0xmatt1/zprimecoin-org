@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Zcash developers
+// Copyright (c) 2018 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,8 +14,8 @@
 #include <librustzcash.h>
 
 SpendDescriptionInfo::SpendDescriptionInfo(
-    libzcash::SaplingExpandedSpendingKey expsk,
-    libzcash::SaplingNote note,
+    libzprime::SaplingExpandedSpendingKey expsk,
+    libzprime::SaplingNote note,
     uint256 anchor,
     SaplingWitness witness) : expsk(expsk), note(note), anchor(anchor), witness(witness)
 {
@@ -76,8 +76,8 @@ private:
 };
 
 void TransactionBuilder::AddSaplingSpend(
-    libzcash::SaplingExpandedSpendingKey expsk,
-    libzcash::SaplingNote note,
+    libzprime::SaplingExpandedSpendingKey expsk,
+    libzprime::SaplingNote note,
     uint256 anchor,
     SaplingWitness witness)
 {
@@ -97,7 +97,7 @@ void TransactionBuilder::AddSaplingSpend(
 
 void TransactionBuilder::AddSaplingOutput(
     uint256 ovk,
-    libzcash::SaplingPaymentAddress to,
+    libzprime::SaplingPaymentAddress to,
     CAmount value,
     std::array<unsigned char, ZC_MEMO_SIZE> memo)
 {
@@ -106,14 +106,14 @@ void TransactionBuilder::AddSaplingOutput(
         throw std::runtime_error("TransactionBuilder cannot add Sapling output to pre-Sapling transaction");
     }
 
-    auto note = libzcash::SaplingNote(to, value);
+    auto note = libzprime::SaplingNote(to, value);
     outputs.emplace_back(ovk, note, memo);
     mtx.valueBalance -= value;
 }
 
 void TransactionBuilder::AddSproutInput(
-    libzcash::SproutSpendingKey sk,
-    libzcash::SproutNote note,
+    libzprime::SproutSpendingKey sk,
+    libzprime::SproutNote note,
     SproutWitness witness)
 {
     if (sproutParams == nullptr) {
@@ -131,7 +131,7 @@ void TransactionBuilder::AddSproutInput(
 }
 
 void TransactionBuilder::AddSproutOutput(
-    libzcash::SproutPaymentAddress to,
+    libzprime::SproutPaymentAddress to,
     CAmount value,
     std::array<unsigned char, ZC_MEMO_SIZE> memo)
 {
@@ -139,7 +139,7 @@ void TransactionBuilder::AddSproutOutput(
         throw std::runtime_error("Cannot add Sprout outputs to a TransactionBuilder without Sprout params");
     }
 
-    libzcash::JSOutput jsOutput(to, value);
+    libzprime::JSOutput jsOutput(to, value);
     jsOutput.memo = memo;
     jsOutputs.push_back(jsOutput);
 }
@@ -170,14 +170,14 @@ void TransactionBuilder::SetFee(CAmount fee)
     this->fee = fee;
 }
 
-void TransactionBuilder::SendChangeTo(libzcash::SaplingPaymentAddress changeAddr, uint256 ovk)
+void TransactionBuilder::SendChangeTo(libzprime::SaplingPaymentAddress changeAddr, uint256 ovk)
 {
     saplingChangeAddr = std::make_pair(ovk, changeAddr);
     sproutChangeAddr = boost::none;
     tChangeAddr = boost::none;
 }
 
-void TransactionBuilder::SendChangeTo(libzcash::SproutPaymentAddress changeAddr)
+void TransactionBuilder::SendChangeTo(libzprime::SproutPaymentAddress changeAddr)
 {
     sproutChangeAddr = changeAddr;
     saplingChangeAddr = boost::none;
@@ -238,7 +238,7 @@ TransactionBuilderResult TransactionBuilder::Build()
         } else if (!spends.empty()) {
             auto fvk = spends[0].expsk.full_viewing_key();
             auto note = spends[0].note;
-            libzcash::SaplingPaymentAddress changeAddr(note.d, note.pk_d);
+            libzprime::SaplingPaymentAddress changeAddr(note.d, note.pk_d);
             AddSaplingOutput(fvk.ovk, changeAddr, change);
         } else if (!jsInputs.empty()) {
             auto changeAddr = jsInputs[0].key.address();
@@ -299,7 +299,7 @@ TransactionBuilderResult TransactionBuilder::Build()
             return TransactionBuilderResult("Output is invalid");
         }
 
-        libzcash::SaplingNotePlaintext notePlaintext(output.note, output.memo);
+        libzprime::SaplingNotePlaintext notePlaintext(output.note, output.memo);
 
         auto res = notePlaintext.encrypt(output.note.pk_d);
         if (!res) {
@@ -327,7 +327,7 @@ TransactionBuilderResult TransactionBuilder::Build()
         odesc.ephemeralKey = encryptor.get_epk();
         odesc.encCiphertext = enc.first;
 
-        libzcash::SaplingOutgoingPlaintext outPlaintext(output.note.pk_d, encryptor.get_esk());
+        libzprime::SaplingOutgoingPlaintext outPlaintext(output.note.pk_d, encryptor.get_esk());
         odesc.outCiphertext = outPlaintext.encrypt(
             output.ovk,
             odesc.cv,
@@ -429,11 +429,11 @@ TransactionBuilderResult TransactionBuilder::Build()
 void TransactionBuilder::CreateJSDescriptions()
 {
     // Copy jsInputs and jsOutputs to more flexible containers
-    std::deque<libzcash::JSInput> jsInputsDeque;
+    std::deque<libzprime::JSInput> jsInputsDeque;
     for (auto jsInput : jsInputs) {
         jsInputsDeque.push_back(jsInput);
     }
-    std::deque<libzcash::JSOutput> jsOutputsDeque;
+    std::deque<libzprime::JSOutput> jsOutputsDeque;
     for (auto jsOutput : jsOutputs) {
         jsOutputsDeque.push_back(jsOutput);
     }
@@ -445,8 +445,8 @@ void TransactionBuilder::CreateJSDescriptions()
         // Create joinsplits, where each output represents a zaddr recipient.
         while (jsOutputsDeque.size() > 0) {
             // Default array entries are dummy inputs and outputs
-            std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS> vjsin;
-            std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS> vjsout;
+            std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS> vjsin;
+            std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS> vjsout;
             uint64_t vpub_old = 0;
 
             for (int n = 0; n < ZC_NUM_JS_OUTPUTS && jsOutputsDeque.size() > 0; n++) {
@@ -490,8 +490,8 @@ void TransactionBuilder::CreateJSDescriptions()
 
     while (!vpubNewProcessed) {
         // Default array entries are dummy inputs and outputs
-        std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS> vjsin;
-        std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS> vjsout;
+        std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS> vjsin;
+        std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS> vjsout;
         uint64_t vpub_old = 0;
         uint64_t vpub_new = 0;
 
@@ -558,7 +558,7 @@ void TransactionBuilder::CreateJSDescriptions()
             ZCNoteDecryption decryptor(changeKey.receiving_key());
             auto hSig = prevJoinSplit.h_sig(*sproutParams, mtx.joinSplitPubKey);
             try {
-                auto plaintext = libzcash::SproutNotePlaintext::decrypt(
+                auto plaintext = libzprime::SproutNotePlaintext::decrypt(
                     decryptor,
                     prevJoinSplit.ciphertexts[changeOutputIndex],
                     prevJoinSplit.ephemeralKey,
@@ -566,7 +566,7 @@ void TransactionBuilder::CreateJSDescriptions()
                     (unsigned char)changeOutputIndex);
 
                 auto note = plaintext.note(changeAddress);
-                vjsin[0] = libzcash::JSInput(changeWitness.get(), note, changeKey);
+                vjsin[0] = libzprime::JSInput(changeWitness.get(), note, changeKey);
 
                 jsInputValue += plaintext.value();
 
@@ -604,7 +604,7 @@ void TransactionBuilder::CreateJSDescriptions()
         }
 
         // Find recipient to transfer funds to
-        libzcash::JSOutput recipient;
+        libzprime::JSOutput recipient;
         if (jsOutputsDeque.size() > 0) {
             recipient = jsOutputsDeque.front();
             jsOutputsDeque.pop_front();
@@ -633,7 +633,7 @@ void TransactionBuilder::CreateJSDescriptions()
             } else if (outAmount > jsInputValue) {
                 // Any amount due is owed to the recipient.  Let the miners fee get paid first.
                 CAmount due = outAmount - jsInputValue;
-                libzcash::JSOutput recipientDue(recipient.addr, due);
+                libzprime::JSOutput recipientDue(recipient.addr, due);
                 recipientDue.memo = recipient.memo;
                 jsOutputsDeque.push_front(recipientDue);
 
@@ -648,7 +648,7 @@ void TransactionBuilder::CreateJSDescriptions()
 
         // create output for any change
         if (jsChange > 0) {
-            vjsout[1] = libzcash::JSOutput(changeAddress, jsChange);
+            vjsout[1] = libzprime::JSOutput(changeAddress, jsChange);
 
             LogPrint("zrpcunsafe", "generating note for change (amount=%s)\n", FormatMoney(jsChange));
         }
@@ -672,8 +672,8 @@ void TransactionBuilder::CreateJSDescriptions()
 void TransactionBuilder::CreateJSDescription(
     uint64_t vpub_old,
     uint64_t vpub_new,
-    std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS> vjsin,
-    std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS> vjsout,
+    std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS> vjsin,
+    std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS> vjsout,
     std::array<size_t, ZC_NUM_JS_INPUTS>& inputMap,
     std::array<size_t, ZC_NUM_JS_OUTPUTS>& outputMap)
 {
@@ -701,7 +701,7 @@ void TransactionBuilder::CreateJSDescription(
             &esk); // parameter expects pointer to esk, so pass in address
 
     {
-        auto verifier = libzcash::ProofVerifier::Strict();
+        auto verifier = libzprime::ProofVerifier::Strict();
         if (!jsdesc.Verify(*sproutParams, verifier, mtx.joinSplitPubKey)) {
             throw std::runtime_error("error verifying joinsplit");
         }

@@ -16,15 +16,15 @@ JSDescription::JSDescription(
     ZCJoinSplit& params,
     const uint256& joinSplitPubKey,
     const uint256& anchor,
-    const std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS>& inputs,
-    const std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS>& outputs,
+    const std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS>& inputs,
+    const std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS>& outputs,
     CAmount vpub_old,
     CAmount vpub_new,
     bool computeProof,
     uint256 *esk // payment disclosure
 ) : vpub_old(vpub_old), vpub_new(vpub_new), anchor(anchor)
 {
-    std::array<libzcash::SproutNote, ZC_NUM_JS_OUTPUTS> notes;
+    std::array<libzprime::SproutNote, ZC_NUM_JS_OUTPUTS> notes;
 
     proof = params.prove(
         makeGrothProof,
@@ -51,8 +51,8 @@ JSDescription JSDescription::Randomized(
     ZCJoinSplit& params,
     const uint256& joinSplitPubKey,
     const uint256& anchor,
-    std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS>& inputs,
-    std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS>& outputs,
+    std::array<libzprime::JSInput, ZC_NUM_JS_INPUTS>& inputs,
+    std::array<libzprime::JSOutput, ZC_NUM_JS_OUTPUTS>& outputs,
     std::array<size_t, ZC_NUM_JS_INPUTS>& inputMap,
     std::array<size_t, ZC_NUM_JS_OUTPUTS>& outputMap,
     CAmount vpub_old,
@@ -82,19 +82,19 @@ JSDescription JSDescription::Randomized(
 class SproutProofVerifier : public boost::static_visitor<bool>
 {
     ZCJoinSplit& params;
-    libzcash::ProofVerifier& verifier;
+    libzprime::ProofVerifier& verifier;
     const uint256& joinSplitPubKey;
     const JSDescription& jsdesc;
 
 public:
     SproutProofVerifier(
         ZCJoinSplit& params,
-        libzcash::ProofVerifier& verifier,
+        libzprime::ProofVerifier& verifier,
         const uint256& joinSplitPubKey,
         const JSDescription& jsdesc
         ) : params(params), jsdesc(jsdesc), verifier(verifier), joinSplitPubKey(joinSplitPubKey) {}
 
-    bool operator()(const libzcash::PHGRProof& proof) const
+    bool operator()(const libzprime::PHGRProof& proof) const
     {
         return params.verify(
             proof,
@@ -110,7 +110,7 @@ public:
         );
     }
 
-    bool operator()(const libzcash::GrothProof& proof) const
+    bool operator()(const libzprime::GrothProof& proof) const
     {
         uint256 h_sig = params.h_sig(jsdesc.randomSeed, jsdesc.nullifiers, joinSplitPubKey);
 
@@ -132,7 +132,7 @@ public:
 
 bool JSDescription::Verify(
     ZCJoinSplit& params,
-    libzcash::ProofVerifier& verifier,
+    libzprime::ProofVerifier& verifier,
     const uint256& joinSplitPubKey
 ) const {
     auto pv = SproutProofVerifier(params, verifier, joinSplitPubKey, *this);
@@ -206,7 +206,7 @@ CMutableTransaction::CMutableTransaction(const CTransaction& tx) : nVersion(tx.n
                                                                    vjoinsplit(tx.vjoinsplit), joinSplitPubKey(tx.joinSplitPubKey), joinSplitSig(tx.joinSplitSig),
                                                                    bindingSig(tx.bindingSig)
 {
-    
+
 }
 
 uint256 CMutableTransaction::GetHash() const

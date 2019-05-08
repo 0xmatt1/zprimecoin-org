@@ -91,7 +91,7 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
  * Where R and S are not negative (their first byte has its highest bit not set), and not
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
- * 
+ *
  * See https://bitcointalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
@@ -131,7 +131,7 @@ bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig) {
     // Verify that the length of the signature matches the sum of the length
     // of the elements.
     if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
- 
+
     // Check whether the R element is an integer.
     if (sig[2] != 0x02) return false;
 
@@ -1057,21 +1057,21 @@ public:
     }
 };
 
-const unsigned char ZCASH_PREVOUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char ZPRIME_PREVOUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'Z','c','a','s','h','P','r','e','v','o','u','t','H','a','s','h'};
-const unsigned char ZCASH_SEQUENCE_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char ZPRIME_SEQUENCE_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'Z','c','a','s','h','S','e','q','u','e','n','c','H','a','s','h'};
-const unsigned char ZCASH_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char ZPRIME_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'Z','c','a','s','h','O','u','t','p','u','t','s','H','a','s','h'};
-const unsigned char ZCASH_JOINSPLITS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char ZPRIME_JOINSPLITS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'Z','c','a','s','h','J','S','p','l','i','t','s','H','a','s','h'};
-const unsigned char ZCASH_SHIELDED_SPENDS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char ZPRIME_SHIELDED_SPENDS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'Z','c','a','s','h','S','S','p','e','n','d','s','H','a','s','h'};
-const unsigned char ZCASH_SHIELDED_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+const unsigned char ZPRIME_SHIELDED_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
     {'Z','c','a','s','h','S','O','u','t','p','u','t','H','a','s','h'};
 
 uint256 GetPrevoutHash(const CTransaction& txTo) {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, ZCASH_PREVOUTS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, ZPRIME_PREVOUTS_HASH_PERSONALIZATION);
     for (unsigned int n = 0; n < txTo.vin.size(); n++) {
         ss << txTo.vin[n].prevout;
     }
@@ -1079,7 +1079,7 @@ uint256 GetPrevoutHash(const CTransaction& txTo) {
 }
 
 uint256 GetSequenceHash(const CTransaction& txTo) {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, ZCASH_SEQUENCE_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, ZPRIME_SEQUENCE_HASH_PERSONALIZATION);
     for (unsigned int n = 0; n < txTo.vin.size(); n++) {
         ss << txTo.vin[n].nSequence;
     }
@@ -1087,7 +1087,7 @@ uint256 GetSequenceHash(const CTransaction& txTo) {
 }
 
 uint256 GetOutputsHash(const CTransaction& txTo) {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, ZCASH_OUTPUTS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, ZPRIME_OUTPUTS_HASH_PERSONALIZATION);
     for (unsigned int n = 0; n < txTo.vout.size(); n++) {
         ss << txTo.vout[n];
     }
@@ -1095,7 +1095,7 @@ uint256 GetOutputsHash(const CTransaction& txTo) {
 }
 
 uint256 GetJoinSplitsHash(const CTransaction& txTo) {
-    CBLAKE2bWriter ss(SER_GETHASH, static_cast<int>(txTo.GetHeader()), ZCASH_JOINSPLITS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, static_cast<int>(txTo.GetHeader()), ZPRIME_JOINSPLITS_HASH_PERSONALIZATION);
     for (unsigned int n = 0; n < txTo.vjoinsplit.size(); n++) {
         ss << txTo.vjoinsplit[n];
     }
@@ -1104,7 +1104,7 @@ uint256 GetJoinSplitsHash(const CTransaction& txTo) {
 }
 
 uint256 GetShieldedSpendsHash(const CTransaction& txTo) {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, ZCASH_SHIELDED_SPENDS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, ZPRIME_SHIELDED_SPENDS_HASH_PERSONALIZATION);
     for (unsigned int n = 0; n < txTo.vShieldedSpend.size(); n++) {
         ss << txTo.vShieldedSpend[n].cv;
         ss << txTo.vShieldedSpend[n].anchor;
@@ -1116,7 +1116,7 @@ uint256 GetShieldedSpendsHash(const CTransaction& txTo) {
 }
 
 uint256 GetShieldedOutputsHash(const CTransaction& txTo) {
-    CBLAKE2bWriter ss(SER_GETHASH, 0, ZCASH_SHIELDED_OUTPUTS_HASH_PERSONALIZATION);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, ZPRIME_SHIELDED_OUTPUTS_HASH_PERSONALIZATION);
     for (unsigned int n = 0; n < txTo.vShieldedOutput.size(); n++) {
         ss << txTo.vShieldedOutput[n];
     }
@@ -1183,7 +1183,7 @@ uint256 SignatureHash(
         if ((nHashType & 0x1f) != SIGHASH_SINGLE && (nHashType & 0x1f) != SIGHASH_NONE) {
             hashOutputs = cache ? cache->hashOutputs : GetOutputsHash(txTo);
         } else if ((nHashType & 0x1f) == SIGHASH_SINGLE && nIn < txTo.vout.size()) {
-            CBLAKE2bWriter ss(SER_GETHASH, 0, ZCASH_OUTPUTS_HASH_PERSONALIZATION);
+            CBLAKE2bWriter ss(SER_GETHASH, 0, ZPRIME_OUTPUTS_HASH_PERSONALIZATION);
             ss << txTo.vout[nIn];
             hashOutputs = ss.GetHash();
         }
@@ -1202,7 +1202,7 @@ uint256 SignatureHash(
 
         uint32_t leConsensusBranchId = htole32(consensusBranchId);
         unsigned char personalization[16] = {};
-        memcpy(personalization, "ZcashSigHash", 12);
+        memcpy(personalization, "zPrimeSigHash", 12);
         memcpy(personalization+12, &leConsensusBranchId, 4);
 
         CBLAKE2bWriter ss(SER_GETHASH, 0, personalization);

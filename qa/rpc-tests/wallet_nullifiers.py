@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2016 The Zcash developers
+# Copyright (c) 2016 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,7 +27,7 @@ class WalletNullifiersTest (BitcoinTestFramework):
         mytaddr = get_coinbase_address(self.nodes[0])
         recipients = []
         recipients.append({"address":myzaddr0, "amount":Decimal('10.0')-Decimal('0.0001')}) # utxo amount less fee
-        
+
         wait_and_assert_operationid_status(self.nodes[0], self.nodes[0].z_sendmany(mytaddr, recipients), timeout=120)
 
         self.sync_all()
@@ -54,7 +54,7 @@ class WalletNullifiersTest (BitcoinTestFramework):
         # send node 0 zaddr to note 2 zaddr
         recipients = []
         recipients.append({"address":myzaddr, "amount":7.0})
-        
+
         wait_and_assert_operationid_status(self.nodes[0], self.nodes[0].z_sendmany(myzaddr0, recipients), timeout=120)
 
         self.sync_all()
@@ -99,7 +99,7 @@ class WalletNullifiersTest (BitcoinTestFramework):
         mytaddr1 = self.nodes[1].getnewaddress()
         recipients = []
         recipients.append({"address":mytaddr1, "amount":1.0})
-        
+
         wait_and_assert_operationid_status(self.nodes[1], self.nodes[1].z_sendmany(myzaddr, recipients), timeout=120)
 
         self.sync_all()

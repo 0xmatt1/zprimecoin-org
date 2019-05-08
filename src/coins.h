@@ -17,9 +17,9 @@
 
 #include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
-#include "zcash/IncrementalMerkleTree.hpp"
+#include "zprime/IncrementalMerkleTree.hpp"
 
-/** 
+/**
  * Pruned version of CTransaction: only retains metadata and unspent transaction outputs
  *
  * Serialized format:
@@ -411,10 +411,10 @@ public:
 
 class CCoinsViewCache;
 
-/** 
+/**
  * A reference to a mutable cache entry. Encapsulating it allows us to run
  *  cleanup code after the modification is finished, and keeping track of
- *  concurrent modifications. 
+ *  concurrent modifications.
  */
 class CCoinsModifier
 {
@@ -441,7 +441,7 @@ protected:
 
     /**
      * Make mutable so that we can "fill the cache" even from Get-methods
-     * declared as "const".  
+     * declared as "const".
      */
     mutable uint256 hashBlock;
     mutable CCoinsMap cacheCoins;
@@ -506,9 +506,9 @@ public:
     /**
      * Return a modifiable reference to a CCoins. Assumes that no entry with the given
      * txid exists and creates a new one. This saves a database access in the case where
-     * the coins were to be wiped out by FromTx anyway. We rely on Zcash-derived block chains
+     * the coins were to be wiped out by FromTx anyway. We rely on zPrime-derived block chains
      * having no duplicate transactions, since BIP 30 and (except for the genesis block)
-     * BIP 34 have been enforced since launch. See the Zcash protocol specification, section
+     * BIP 34 have been enforced since launch. See the zPrime protocol specification, section
      * "Bitcoin Improvement Proposals". Simultaneous modifications are not allowed.
      */
     CCoinsModifier ModifyNewCoins(const uint256 &txid);
@@ -526,7 +526,7 @@ public:
     //! Calculate the size of the cache (in bytes)
     size_t DynamicMemoryUsage() const;
 
-    /** 
+    /**
      * Amount of bitcoins coming in to a transaction
      * Note that lightweight clients may not know anything besides the hash of previous transactions,
      * so may not be able to calculate this.

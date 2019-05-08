@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2018 The Zcash developers
+# Copyright (c) 2018 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -71,8 +71,8 @@ class FinalSaplingRootTest(BitcoinTestFramework):
         # Verify the final Sapling root has changed
         blk = self.nodes[0].getblock("201")
         root = blk["finalsaplingroot"]
-        assert(root is not SAPLING_TREE_EMPTY_ROOT)        
-        assert(root is not NULL_FIELD)  
+        assert(root is not SAPLING_TREE_EMPTY_ROOT)
+        assert(root is not NULL_FIELD)
 
         # Verify there is a Sapling output description (its commitment was added to tree)
         result = self.nodes[0].getrawtransaction(mytxid, 1)

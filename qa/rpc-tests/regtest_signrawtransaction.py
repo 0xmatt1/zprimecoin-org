@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2018 The Zcash developers
+# Copyright (c) 2018 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,7 +27,7 @@ class RegtestSignrawtransactionTest (BitcoinTestFramework):
         self.sync_all()
 
         # Create and sign Overwinter transaction.
-        # If the incorrect consensus branch id is selected, there will be a signing error. 
+        # If the incorrect consensus branch id is selected, there will be a signing error.
         opid = self.nodes[1].z_sendmany(taddr,
             [{'address': zaddr1, 'amount': 1}])
         wait_and_assert_operationid_status(self.nodes[1], opid)

@@ -1,9 +1,9 @@
-// Copyright (c) 2017 The Zcash developers
+// Copyright (c) 2017 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef ZCASH_AMQP_AMQPSENDER_H
-#define ZCASH_AMQP_AMQPSENDER_H
+#ifndef ZPRIME_AMQP_AMQPSENDER_H
+#define ZPRIME_AMQP_AMQPSENDER_H
 
 #include "amqpconfig.h"
 
@@ -14,7 +14,7 @@
 
 class AMQPSender : public proton::messaging_handler {
   private:
-    std::deque<proton::message> messages_; 
+    std::deque<proton::message> messages_;
     proton::url url_;
     proton::connection conn_;
     proton::sender sender_;
@@ -33,7 +33,7 @@ class AMQPSender : public proton::messaging_handler {
         sender_ = conn_.open_sender(url_.path());
     }
 
-    // Remote end signals when the local end can send (i.e. has credit) 
+    // Remote end signals when the local end can send (i.e. has credit)
     void on_sendable(proton::sender &s) override {
         dispatch();
     }
@@ -112,4 +112,4 @@ class AMQPSender : public proton::messaging_handler {
 };
 
 
-#endif //ZCASH_AMQP_AMQPSENDER_H
+#endif //ZPRIME_AMQP_AMQPSENDER_H

@@ -1,14 +1,14 @@
 Notable changes
 ===============
 
-zcash-cli: arguments privacy
+zprime-cli: arguments privacy
 ----------------------------
 
 The RPC command line client gained a new argument, `-stdin`
 to read extra arguments from standard input, one per line until EOF/Ctrl-D.
 For example:
 
-    $ src/zcash-cli -stdin walletpassphrase
+    $ src/zprime-cli -stdin walletpassphrase
     mysecretcode
     120
     ^D (Ctrl-D)
@@ -30,7 +30,7 @@ and are affected by this change:
 - RPC `decoderawtransaction`
 - REST `/rest/tx/` (JSON format)
 - REST `/rest/block/` (JSON format when including extended tx details)
-- `zcash-tx -json`
+- `zprime-tx -json`
 
 For example, the `scriptSig.asm` property of a transaction input that
 previously showed an assembly representation of:
@@ -69,16 +69,16 @@ Eirik Ogilvie-Wigley (7):
       Coinbase transactions can not have shielded spend or output
 
 Jack Grigg (52):
-      Disable building libzcashconsensus by default
+      Disable building libzprimeconsensus by default
       depends: Upgrade Rust to 1.26.0-beta.3
       depends: Add support for unpackaged Rust crates
       depends: Update to latest librustzcash with sapling-crypto dependencies
       Add Sapling to upgrade list
       Add static asserts to ensure CONTINUE_EXECUTION doesn't collide
-      [Bitcoin-Tx] Adjust util-test test cases for Zcash
-      Handle usage of prevector for CScript in Zcash-specific code
-      GetSerializeSize changes in Zcash-specific code
-      Remove nType and nVersion from Zcash-specific code
+      [Bitcoin-Tx] Adjust util-test test cases for zPrime
+      Handle usage of prevector for CScript in zPrime-specific code
+      GetSerializeSize changes in zPrime-specific code
+      Remove nType and nVersion from zPrime-specific code
       Adjust consensus rules to require v4 transactions from Sapling activation
       Implement basic Sapling v4 transaction parser
       Add Sapling v4 transactions to IsStandard
@@ -91,7 +91,7 @@ Jack Grigg (52):
       Attempt to log before terminating if prevector allocation fails
       Fix -Wstring-plus-int warning on clang
       Update mempool_nu_activation RPC test to exercise both Overwinter and Sapling
-      Use CBitcoinAddress wrappers in Zcash-specific code
+      Use CBitcoinAddress wrappers in zPrime-specific code
       Change JSOutPoint constructor to have js argument be uint64_t
       Update CreateNewContextualCMutableTransaction to create Sapling transactions
       Expire Overwinter transactions before the Sapling activation height
@@ -111,7 +111,7 @@ Jack Grigg (52):
       Introduce wrappers around CZCSpendingKey
       Introduce wrappers around CZCViewingKey
       Implement {Encode,Decode}PaymentAddress etc. without CZCEncoding
-      Add key_io includes to Zcash-specific code
+      Add key_io includes to zPrime-specific code
       Add valueBalance to value balances, and enforce its consensus rules
       Track net value entering and exiting the Sapling circuit
       Add contextual comment for GetValueOut() and GetShieldedValueIn()
@@ -144,7 +144,7 @@ Kaz Wesley (1):
       CBase58Data::SetString: cleanse the full vector
 
 Larry Ruane (1):
-      fix qa/zcash/full_test_suite.py pathname
+      fix qa/zprime/full_test_suite.py pathname
 
 MarcoFalke (3):
       [uacomment] Sanitize per BIP-0014
@@ -251,8 +251,8 @@ Sean Bowe (49):
 Simon Liu (16):
       Part of #2966, extending Sprout tests to other epochs.
       Closes #3134 - Least Authority Issue E
-      Refactoring: libzcash::Note is now a subclass of libzcash::BaseNote.
-      Refactoring: Rename class libzcash::Note to libzcash::SproutNote.
+      Refactoring: libzprime::Note is now a subclass of libzprime::BaseNote.
+      Refactoring: Rename class libzprime::Note to libzprime::SproutNote.
       Refactoring: SproutNote member variable value moved to BaseNote.
       Add virtual destructor to SproutNote and BaseNote
       Remove unused SproutNote variables.

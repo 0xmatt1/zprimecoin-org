@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "zcash/Proof.hpp"
+#include "zprime/Proof.hpp"
 
 #include <iostream>
 
@@ -7,7 +7,7 @@
 #include <libsnark/relations/constraint_satisfaction_problems/r1cs/examples/r1cs_examples.hpp>
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 
-using namespace libzcash;
+using namespace libzprime;
 
 typedef libsnark::default_r1cs_ppzksnark_pp curve_pp;
 typedef libsnark::default_r1cs_ppzksnark_pp::G1_type curve_G1;
@@ -446,7 +446,7 @@ TEST(proofs, zksnark_serializes_properly)
     for (size_t i = 0; i < 20; i++) {
         auto badproof = PHGRProof::random_invalid();
         auto proof = badproof.to_libsnark_proof<libsnark::r1cs_ppzksnark_proof<curve_pp>>();
-        
+
         auto verifierEnabled = ProofVerifier::Strict();
         auto verifierDisabled = ProofVerifier::Disabled();
         // This verifier should catch the bad proof
@@ -581,7 +581,7 @@ TEST(proofs, g1_deserialization)
         try {
             curve_G1 g_real = g.to_libsnark_g1<curve_G1>();
         } catch(...) {
-            
+
         }
     }
 }
@@ -663,7 +663,7 @@ TEST(proofs, g2_deserialization)
         try {
             curve_G2 g_real = g.to_libsnark_g2<curve_G2>();
         } catch(...) {
-            
+
         }
     }
 }

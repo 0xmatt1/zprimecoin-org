@@ -56,7 +56,7 @@ Daniel Kraft (1):
       trivial: use constants for db keys
 
 Jack Grigg (43):
-      Add environment variable for setting ./configure flags in zcutil/build.sh
+      Add environment variable for setting ./configure flags in zputil/build.sh
       Add configure flags for enabling ASan/UBSan and TSan
       Split declaration and definition of SPROUT_BRANCH_ID constant
       Add link to Overwinter info page
@@ -65,7 +65,7 @@ Jack Grigg (43):
       Don't require RELRO and BIND_NOW for Darwin
       Only set multicore flags if OpenMP is available
       Revert "remove -mt suffix from boost libraries built by depends"
-      Use correct Boost::System linker flag for libzcash
+      Use correct Boost::System linker flag for libzprime
       depends: Remove -mt suffix from Boost libraries
       snark: Remove -mt suffix from Boost library
       cleanup: Ensure code is pyflakes-clean for CI
@@ -87,8 +87,8 @@ Jack Grigg (43):
       Add RPC test of RewindBlockIndex
       When rewinding, remove insufficiently-validated blocks
       Adjust deprecation message to work in both UI and -alertnotify
-      Refactor Zcash changes to CCoinsViewDB
-      Update blockchain.py RPC test for Zcash
+      Refactor zPrime changes to CCoinsViewDB
+      Update blockchain.py RPC test for zPrime
       Update CBlockTreeDB::EraseBatchSync for dbwrapper refactor
       Fix typo
       test: Check return value of snprintf

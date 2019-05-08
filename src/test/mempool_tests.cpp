@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(MempoolRemoveTest)
     testPool.remove(txParent, removed, true);
     BOOST_CHECK_EQUAL(removed.size(), 1);
     removed.clear();
-    
+
     // Parent, children, grandchildren:
     testPool.addUnchecked(txParent.GetHash(), entry.FromTx(txParent));
     for (int i = 0; i < 3; i++)
@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE(RemoveWithoutBranchId) {
 }
 
 // Test that nCheckFrequency is set correctly when calling setSanityCheck().
-// https://github.com/zcash/zcash/issues/3134
+// https://github.com/zprimecoin/zprime/issues/3134
 BOOST_AUTO_TEST_CASE(SetSanityCheck) {
     CTxMemPool pool(CFeeRate(0));
     pool.setSanityCheck(1.0);

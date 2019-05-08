@@ -87,7 +87,7 @@ bool AsyncRPCOperation_saplingmigration::main_impl() {
     }
 
     HDSeed seed = pwalletMain->GetHDSeedForRPC();
-    libzcash::SaplingPaymentAddress migrationDestAddress = getMigrationDestAddress(seed);
+    libzprime::SaplingPaymentAddress migrationDestAddress = getMigrationDestAddress(seed);
 
     auto consensusParams = Params().GetConsensus();
 
@@ -98,7 +98,7 @@ bool AsyncRPCOperation_saplingmigration::main_impl() {
     CCoinsViewCache coinsView(pcoinsTip);
     do {
         CAmount amountToSend = chooseAmount(availableFunds);
-        auto builder = TransactionBuilder(consensusParams, targetHeight_, pwalletMain, pzcashParams, &coinsView, &cs_main);
+        auto builder = TransactionBuilder(consensusParams, targetHeight_, pwalletMain, pzprimeParams, &coinsView, &cs_main);
         std::vector<CSproutNotePlaintextEntry> fromNotes;
         CAmount fromNoteAmount = 0;
         while (fromNoteAmount < amountToSend) {
@@ -108,13 +108,13 @@ bool AsyncRPCOperation_saplingmigration::main_impl() {
         }
         availableFunds -= fromNoteAmount;
         for (const CSproutNotePlaintextEntry& sproutEntry : fromNotes) {
-            libzcash::SproutNote sproutNote = sproutEntry.plaintext.note(sproutEntry.address);
-            libzcash::SproutSpendingKey sproutSk;
+            libzprime::SproutNote sproutNote = sproutEntry.plaintext.note(sproutEntry.address);
+            libzprime::SproutSpendingKey sproutSk;
             pwalletMain->GetSproutSpendingKey(sproutEntry.address, sproutSk);
             std::vector<JSOutPoint> vOutPoints = {sproutEntry.jsop};
             // Each migration transaction SHOULD specify an anchor at height N-10
             // for each Sprout JoinSplit description
-            // TODO: the above functionality (in comment) is not implemented in zcashd
+            // TODO: the above functionality (in comment) is not implemented in zprimed
             uint256 inputAnchor;
             std::vector<boost::optional<SproutWitness>> vInputWitnesses;
             pwalletMain->GetSproutNoteWitnesses(vOutPoints, vInputWitnesses, inputAnchor);
@@ -160,16 +160,16 @@ CAmount AsyncRPCOperation_saplingmigration::chooseAmount(const CAmount& availabl
 }
 
 // Unless otherwise specified, the migration destination address is the address for Sapling account 0
-libzcash::SaplingPaymentAddress AsyncRPCOperation_saplingmigration::getMigrationDestAddress(const HDSeed& seed) {
+libzprime::SaplingPaymentAddress AsyncRPCOperation_saplingmigration::getMigrationDestAddress(const HDSeed& seed) {
     if (mapArgs.count("-migrationdestaddress")) {
         std::string migrationDestAddress = mapArgs["-migrationdestaddress"];
         auto address = DecodePaymentAddress(migrationDestAddress);
-        auto saplingAddress = boost::get<libzcash::SaplingPaymentAddress>(&address);
+        auto saplingAddress = boost::get<libzprime::SaplingPaymentAddress>(&address);
         assert(saplingAddress != nullptr); // This is checked in init.cpp
         return *saplingAddress;
     }
     // Derive the address for Sapling account 0
-    auto m = libzcash::SaplingExtendedSpendingKey::Master(seed);
+    auto m = libzprime::SaplingExtendedSpendingKey::Master(seed);
     uint32_t bip44CoinType = Params().BIP44CoinType();
 
     // We use a fixed keypath scheme of m/32'/coin_type'/account'
@@ -179,13 +179,13 @@ libzcash::SaplingPaymentAddress AsyncRPCOperation_saplingmigration::getMigration
     auto m_32h_cth = m_32h.Derive(bip44CoinType | ZIP32_HARDENED_KEY_LIMIT);
 
     // Derive m/32'/coin_type'/0'
-    libzcash::SaplingExtendedSpendingKey xsk = m_32h_cth.Derive(0 | ZIP32_HARDENED_KEY_LIMIT);
+    libzprime::SaplingExtendedSpendingKey xsk = m_32h_cth.Derive(0 | ZIP32_HARDENED_KEY_LIMIT);
 
-    libzcash::SaplingPaymentAddress toAddress = xsk.DefaultAddress();
-    
+    libzprime::SaplingPaymentAddress toAddress = xsk.DefaultAddress();
+
     // Refactor: this is similar logic as in the visitor HaveSpendingKeyForPaymentAddress and is used elsewhere
-    libzcash::SaplingIncomingViewingKey ivk;
-    libzcash::SaplingFullViewingKey fvk;
+    libzprime::SaplingIncomingViewingKey ivk;
+    libzprime::SaplingFullViewingKey fvk;
     if (!(pwalletMain->GetSaplingIncomingViewingKey(toAddress, ivk) &&
         pwalletMain->GetSaplingFullViewingKey(ivk, fvk) &&
         pwalletMain->HaveSaplingSpendingKey(fvk))) {

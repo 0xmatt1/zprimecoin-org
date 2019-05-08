@@ -2,14 +2,14 @@
 *.deb
 *.exe
 src/bitcoin
-src/zcashd
-src/zcash-cli
-src/zcash-gtest
-src/zcash-tx
+src/zprimed
+src/zprime-cli
+src/zprime-gtest
+src/zprime-tx
 src/test/test_bitcoin
 
-*zcashTest.pk
-*zcashTest.vk
+*zprimeTest.pk
+*zprimeTest.vk
 
 # autoreconf
 Makefile.in
@@ -52,7 +52,7 @@ src/univalue/gen
 *.pyc
 *.o
 *.o-*
-.zcash
+.zprime
 *.a
 *.pb.cc
 *.pb.h
@@ -88,7 +88,7 @@ build
 *.gcda
 /*.info
 test_bitcoin.coverage/
-zcash-gtest.coverage/
+zprime-gtest.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -105,7 +105,7 @@ qa/pull-tester/test.*/*
 
 /doc/doxygen/
 
-libzcashconsensus.pc
+libzprimeconsensus.pc
 
 contrib/debian/files
 contrib/debian/substvars

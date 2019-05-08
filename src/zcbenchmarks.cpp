@@ -28,12 +28,12 @@
 
 #include "zcbenchmarks.h"
 
-#include "zcash/Zcash.h"
-#include "zcash/IncrementalMerkleTree.hpp"
-#include "zcash/Note.hpp"
+#include "zprime/zPrime.h"
+#include "zprime/IncrementalMerkleTree.hpp"
+#include "zprime/Note.hpp"
 #include "librustzcash.h"
 
-using namespace libzcash;
+using namespace libzprime;
 // This method is based on Shutdown from init.cpp
 void pre_wallet_load()
 {
@@ -64,7 +64,7 @@ void post_wallet_load(){
     // Generate coins in the background
     if (pwalletMain || !GetArg("-mineraddress", "").empty())
         GenerateBitcoins(GetBoolArg("-gen", false), GetArg("-genproclimit", 1), Params());
-#endif    
+#endif
 }
 
 
@@ -119,7 +119,7 @@ double benchmark_create_joinsplit()
     struct timeval tv_start;
     timer_start(tv_start);
     JSDescription jsdesc(true,
-                         *pzcashParams,
+                         *pzprimeParams,
                          joinSplitPubKey,
                          anchor,
                          {JSInput(), JSInput()},
@@ -128,8 +128,8 @@ double benchmark_create_joinsplit()
                          0);
     double ret = timer_stop(tv_start);
 
-    auto verifier = libzcash::ProofVerifier::Strict();
-    assert(jsdesc.Verify(*pzcashParams, verifier, joinSplitPubKey));
+    auto verifier = libzprime::ProofVerifier::Strict();
+    assert(jsdesc.Verify(*pzprimeParams, verifier, joinSplitPubKey));
     return ret;
 }
 
@@ -159,8 +159,8 @@ double benchmark_verify_joinsplit(const JSDescription &joinsplit)
     struct timeval tv_start;
     timer_start(tv_start);
     uint256 joinSplitPubKey;
-    auto verifier = libzcash::ProofVerifier::Strict();
-    joinsplit.Verify(*pzcashParams, verifier, joinSplitPubKey);
+    auto verifier = libzprime::ProofVerifier::Strict();
+    joinsplit.Verify(*pzprimeParams, verifier, joinSplitPubKey);
     return timer_stop(tv_start);
 }
 
@@ -281,20 +281,20 @@ double benchmark_large_tx(size_t nInputs)
 }
 
 // The two benchmarks, try_decrypt_sprout_notes and try_decrypt_sapling_notes,
-// are checking worst-case scenarios. In both we add n keys to a wallet, 
+// are checking worst-case scenarios. In both we add n keys to a wallet,
 // create a transaction using a key not in our original list of n, and then
-// check that the transaction is not associated with any of the keys in our 
+// check that the transaction is not associated with any of the keys in our
 // wallet. We call assert(...) to ensure that this is true.
 double benchmark_try_decrypt_sprout_notes(size_t nKeys)
 {
     CWallet wallet;
     for (int i = 0; i < nKeys; i++) {
-        auto sk = libzcash::SproutSpendingKey::random();
+        auto sk = libzprime::SproutSpendingKey::random();
         wallet.AddSproutSpendingKey(sk);
     }
 
-    auto sk = libzcash::SproutSpendingKey::random();
-    auto tx = GetValidSproutReceive(*pzcashParams, sk, 10, true);
+    auto sk = libzprime::SproutSpendingKey::random();
+    auto tx = GetValidSproutReceive(*pzprimeParams, sk, 10, true);
 
     struct timeval tv_start;
     timer_start(tv_start);
@@ -329,9 +329,9 @@ double benchmark_try_decrypt_sapling_notes(size_t nKeys)
     return timer_stop(tv_start);
 }
 
-CWalletTx CreateSproutTxWithNoteData(const libzcash::SproutSpendingKey& sk) {
-    auto wtx = GetValidSproutReceive(*pzcashParams, sk, 10, true);
-    auto note = GetSproutNote(*pzcashParams, sk, wtx, 0, 1);
+CWalletTx CreateSproutTxWithNoteData(const libzprime::SproutSpendingKey& sk) {
+    auto wtx = GetValidSproutReceive(*pzprimeParams, sk, 10, true);
+    auto note = GetSproutNote(*pzprimeParams, sk, wtx, 0, 1);
     auto nullifier = note.nullifier(sk);
 
     mapSproutNoteData_t noteDataMap;
@@ -352,7 +352,7 @@ double benchmark_increment_sprout_note_witnesses(size_t nTxs)
     SproutMerkleTree sproutTree;
     SaplingMerkleTree saplingTree;
 
-    auto sproutSpendingKey = libzcash::SproutSpendingKey::random();
+    auto sproutSpendingKey = libzprime::SproutSpendingKey::random();
     wallet.AddSproutSpendingKey(sproutSpendingKey);
 
     // First block
@@ -389,7 +389,7 @@ double benchmark_increment_sprout_note_witnesses(size_t nTxs)
 
 CWalletTx CreateSaplingTxWithNoteData(const Consensus::Params& consensusParams,
                                       CBasicKeyStore& keyStore,
-                                      const libzcash::SaplingExtendedSpendingKey &sk) {
+                                      const libzprime::SaplingExtendedSpendingKey &sk) {
     auto wtx = GetValidSaplingReceive(consensusParams, keyStore, sk, 10);
     auto testNote = GetTestSaplingNote(sk.DefaultAddress(), 10);
     auto fvk = sk.expsk.full_viewing_key();
@@ -608,7 +608,7 @@ double benchmark_listunspent()
 
 double benchmark_create_sapling_spend()
 {
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto expsk = sk.expanded_spending_key();
     auto address = sk.default_address();
     SaplingNote note(address, GetRand(MAX_MONEY));
@@ -659,13 +659,13 @@ double benchmark_create_sapling_spend()
 
 double benchmark_create_sapling_output()
 {
-    auto sk = libzcash::SaplingSpendingKey::random();
+    auto sk = libzprime::SaplingSpendingKey::random();
     auto address = sk.default_address();
 
     std::array<unsigned char, ZC_MEMO_SIZE> memo;
     SaplingNote note(address, GetRand(MAX_MONEY));
 
-    libzcash::SaplingNotePlaintext notePlaintext(note, memo);
+    libzprime::SaplingNotePlaintext notePlaintext(note, memo);
     auto res = notePlaintext.encrypt(note.pk_d);
     if (!res) {
         throw JSONRPCError(RPC_INTERNAL_ERROR, "SaplingNotePlaintext::encrypt() failed");

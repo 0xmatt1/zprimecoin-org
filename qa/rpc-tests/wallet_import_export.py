@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2018 The Zcash developers
+# Copyright (c) 2018 The zPrime developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -38,7 +38,7 @@ class WalletImportExportTest (BitcoinTestFramework):
         # node 1 should not have the keys
         dump_path1 = self.nodes[1].z_exportwallet('walletdumpbefore')
         (t_keys1, sprout_keys1, sapling_keys1) = parse_wallet_file(dump_path1)
-        
+
         assert_true(sprout_address0 not in sprout_keys1)
         assert_true(sapling_address0 not in sapling_keys1)
 
@@ -48,7 +48,7 @@ class WalletImportExportTest (BitcoinTestFramework):
         # node 1 should now have the keys
         dump_path1 = self.nodes[1].z_exportwallet('walletdumpafter')
         (t_keys1, sprout_keys1, sapling_keys1) = parse_wallet_file(dump_path1)
-        
+
         assert_true(sprout_address0 in sprout_keys1)
         assert_true(sapling_address0 in sapling_keys1)
         assert_true(sapling_address2 in sapling_keys1)

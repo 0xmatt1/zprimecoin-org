@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Zcash developers
+// Copyright (c) 2017 The zPrime developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -95,7 +95,7 @@ void AMQPAbstractPublishNotifier::Shutdown()
 
 bool AMQPAbstractPublishNotifier::SendMessage(const char *command, const void* data, size_t size)
 {
-    try { 
+    try {
         proton::binary content;
         const char *p = (const char *)data;
         content.assign(p, p + size);

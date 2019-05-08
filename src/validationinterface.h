@@ -9,7 +9,7 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "zcash/IncrementalMerkleTree.hpp"
+#include "zprime/IncrementalMerkleTree.hpp"
 
 class CBlock;
 class CBlockIndex;

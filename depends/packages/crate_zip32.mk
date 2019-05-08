@@ -1,6 +1,6 @@
 package=crate_zip32
 $(package)_crate_name=zip32
-$(package)_download_path=https://github.com/zcash-hackworks/$($(package)_crate_name)/archive/
+$(package)_download_path=https://github.com/zprimecoin-hackworks/$($(package)_crate_name)/archive/
 $(package)_file_name=$(package)-$($(package)_git_commit).tar.gz
 $(package)_download_file=$($(package)_git_commit).tar.gz
 $(package)_sha256_hash=b0b011ea96524f0d918a44c7ab8a3dec6270879d1ff03d7dbda6c676d25caa7e

@@ -18,7 +18,7 @@
 #include <map>
 
 #include <boost/test/unit_test.hpp>
-#include "zcash/IncrementalMerkleTree.hpp"
+#include "zprime/IncrementalMerkleTree.hpp"
 
 namespace
 {
@@ -238,7 +238,7 @@ public:
         JSDescription jsd;
         jsd.nullifiers[0] = sproutNullifier;
         mutableTx.vjoinsplit.emplace_back(jsd);
-        
+
         saplingNullifier = GetRandHash();
         SpendDescription sd;
         sd.nullifier = saplingNullifier;
@@ -252,10 +252,10 @@ public:
 
 uint256 appendRandomSproutCommitment(SproutMerkleTree &tree)
 {
-    libzcash::SproutSpendingKey k = libzcash::SproutSpendingKey::random();
-    libzcash::SproutPaymentAddress addr = k.address();
+    libzprime::SproutSpendingKey k = libzprime::SproutSpendingKey::random();
+    libzprime::SproutPaymentAddress addr = k.address();
 
-    libzcash::SproutNote note(addr.a_pk, 0, uint256(), uint256());
+    libzprime::SproutNote note(addr.a_pk, 0, uint256(), uint256());
 
     auto cm = note.cm();
     tree.append(cm);
@@ -580,7 +580,7 @@ template<typename Tree> void anchorsFlushImpl(ShieldedType type)
         cache.PushAnchor(tree);
         cache.Flush();
     }
-    
+
     {
         CCoinsViewCacheTest cache(&base);
         Tree tree;
@@ -738,7 +738,7 @@ template<typename Tree> void anchorsTestImpl(ShieldedType type)
         {
             Tree test_tree2;
             GetAnchorAt(cache, newrt, test_tree2);
-            
+
             BOOST_CHECK(test_tree2.root() == newrt);
         }
 

@@ -11,7 +11,7 @@
 
 #include "test/test_bitcoin.h"
 
-#include "zcash/Address.hpp"
+#include "zprime/Address.hpp"
 
 #include "asyncrpcqueue.h"
 #include "asyncrpcoperation.h"
@@ -352,7 +352,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_validateaddress)
     BOOST_CHECK_THROW(CallRPC("z_validateaddress toomany args"), runtime_error);
 
     // Wallet should be empty
-    std::set<libzcash::SproutPaymentAddress> addrs;
+    std::set<libzprime::SproutPaymentAddress> addrs;
     pwalletMain->GetSproutPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==0);
 
@@ -409,12 +409,12 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_exportwallet)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     // wallet should be empty
-    std::set<libzcash::SproutPaymentAddress> addrs;
+    std::set<libzprime::SproutPaymentAddress> addrs;
     pwalletMain->GetSproutPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==0);
 
     // wallet should have one key
-    libzcash::SproutPaymentAddress addr = pwalletMain->GenerateNewSproutZKey();
+    libzprime::SproutPaymentAddress addr = pwalletMain->GenerateNewSproutZKey();
     pwalletMain->GetSproutPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==1);
 
@@ -439,7 +439,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_exportwallet)
     BOOST_CHECK_NO_THROW(CallRPC(string("z_exportwallet ") + tmpfilename.string()));
 
 
-    libzcash::SproutSpendingKey key;
+    libzprime::SproutSpendingKey key;
     BOOST_CHECK(pwalletMain->GetSproutSpendingKey(addr, key));
 
     std::string s1 = EncodePaymentAddress(addr);
@@ -484,13 +484,13 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importwallet)
     BOOST_CHECK_THROW(CallRPC("z_importwallet toomany args"), runtime_error);
 
     // create a random key locally
-    auto testSpendingKey = libzcash::SproutSpendingKey::random();
+    auto testSpendingKey = libzprime::SproutSpendingKey::random();
     auto testPaymentAddress = testSpendingKey.address();
     std::string testAddr = EncodePaymentAddress(testPaymentAddress);
     std::string testKey = EncodeSpendingKey(testSpendingKey);
 
     // create test data using the random key
-    std::string format_str = "# Wallet dump created by Zcash v0.11.2.0.z8-9155cc6-dirty (2016-08-11 11:37:00 -0700)\n"
+    std::string format_str = "# Wallet dump created by zPrime v0.11.2.0.z8-9155cc6-dirty (2016-08-11 11:37:00 -0700)\n"
             "# * Created on 2016-08-12T21:55:36Z\n"
             "# * Best block at time of backup was 0 (0de0a3851fef2d433b9b4f51d4342bdd24c5ddd793eb8fba57189f07e9235d52),\n"
             "#   mined on 2009-01-03T18:15:05Z\n"
@@ -513,7 +513,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importwallet)
     file << std::flush;
 
     // wallet should currently be empty
-    std::set<libzcash::SproutPaymentAddress> addrs;
+    std::set<libzprime::SproutPaymentAddress> addrs;
     pwalletMain->GetSproutPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==0);
 
@@ -527,12 +527,12 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importwallet)
     // check that we have the spending key for the address
     auto address = DecodePaymentAddress(testAddr);
     BOOST_CHECK(IsValidPaymentAddress(address));
-    BOOST_ASSERT(boost::get<libzcash::SproutPaymentAddress>(&address) != nullptr);
-    auto addr = boost::get<libzcash::SproutPaymentAddress>(address);
+    BOOST_ASSERT(boost::get<libzprime::SproutPaymentAddress>(&address) != nullptr);
+    auto addr = boost::get<libzprime::SproutPaymentAddress>(address);
     BOOST_CHECK(pwalletMain->HaveSproutSpendingKey(addr));
 
     // Verify the spending key is the same as the test data
-    libzcash::SproutSpendingKey k;
+    libzprime::SproutSpendingKey k;
     BOOST_CHECK(pwalletMain->GetSproutSpendingKey(addr, k));
     BOOST_CHECK_EQUAL(testKey, EncodeSpendingKey(k));
 }
@@ -557,7 +557,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importexport)
     BOOST_CHECK_THROW(CallRPC("z_exportkey toomany args"), runtime_error);
 
     // error if invalid args
-    auto sk = libzcash::SproutSpendingKey::random();
+    auto sk = libzprime::SproutSpendingKey::random();
     std::string prefix = std::string("z_importkey ") + EncodeSpendingKey(sk) + " yes ";
     BOOST_CHECK_THROW(CallRPC(prefix + "-1"), runtime_error);
     BOOST_CHECK_THROW(CallRPC(prefix + "2147483647"), runtime_error); // allowed, but > height of active chain tip
@@ -565,10 +565,10 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importexport)
     BOOST_CHECK_THROW(CallRPC(prefix + "100badchars"), runtime_error);
 
     // wallet should currently be empty
-    std::set<libzcash::SproutPaymentAddress> addrs;
+    std::set<libzprime::SproutPaymentAddress> addrs;
     pwalletMain->GetSproutPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==0);
-    std::set<libzcash::SaplingPaymentAddress> saplingAddrs;
+    std::set<libzprime::SaplingPaymentAddress> saplingAddrs;
     pwalletMain->GetSaplingPaymentAddresses(saplingAddrs);
     BOOST_CHECK(saplingAddrs.empty());
 
@@ -577,7 +577,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importexport)
     // verify import and export key
     for (int i = 0; i < n1; i++) {
         // create a random Sprout key locally
-        auto testSpendingKey = libzcash::SproutSpendingKey::random();
+        auto testSpendingKey = libzprime::SproutSpendingKey::random();
         auto testPaymentAddress = testSpendingKey.address();
         std::string testAddr = EncodePaymentAddress(testPaymentAddress);
         std::string testKey = EncodeSpendingKey(testSpendingKey);
@@ -638,8 +638,8 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_z_importexport)
     std::string newaddress = retValue.get_str();
     auto address = DecodePaymentAddress(newaddress);
     BOOST_CHECK(IsValidPaymentAddress(address));
-    BOOST_ASSERT(boost::get<libzcash::SproutPaymentAddress>(&address) != nullptr);
-    auto newAddr = boost::get<libzcash::SproutPaymentAddress>(address);
+    BOOST_ASSERT(boost::get<libzprime::SproutPaymentAddress>(&address) != nullptr);
+    auto newAddr = boost::get<libzprime::SproutPaymentAddress>(address);
     BOOST_CHECK(pwalletMain->HaveSproutSpendingKey(newAddr));
 
     // Check if too many args
@@ -1365,7 +1365,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_encrypted_wallet_zkeys)
     int n = 100;
 
     // wallet should currently be empty
-    std::set<libzcash::SproutPaymentAddress> addrs;
+    std::set<libzprime::SproutPaymentAddress> addrs;
     pwalletMain->GetSproutPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==0);
 
@@ -1426,7 +1426,7 @@ BOOST_AUTO_TEST_CASE(rpc_wallet_encrypted_wallet_sapzkeys)
     }
 
     // wallet should currently be empty
-    std::set<libzcash::SaplingPaymentAddress> addrs;
+    std::set<libzprime::SaplingPaymentAddress> addrs;
     pwalletMain->GetSaplingPaymentAddresses(addrs);
     BOOST_CHECK(addrs.size()==0);
 
@@ -1617,7 +1617,7 @@ BOOST_AUTO_TEST_CASE(rpc_z_shieldcoinbase_internals)
     if (mtx.nVersion == 1) {
         mtx.nVersion = 2;
     }
-    
+
     // Test that option -mempooltxinputlimit is respected.
     mapArgs["-mempooltxinputlimit"] = "1";
 
@@ -1694,7 +1694,7 @@ BOOST_AUTO_TEST_CASE(rpc_z_mergetoaddress_parameters)
     LOCK(pwalletMain->cs_wallet);
 
     CheckRPCThrows("z_mergetoaddress 1 2",
-        "Error: z_mergetoaddress is disabled. Run './zcash-cli help z_mergetoaddress' for instructions on how to enable this feature.");
+        "Error: z_mergetoaddress is disabled. Run './zprime-cli help z_mergetoaddress' for instructions on how to enable this feature.");
 
     // Set global state required for z_mergetoaddress
     fExperimentalMode = true;
@@ -1769,7 +1769,7 @@ BOOST_AUTO_TEST_CASE(rpc_z_mergetoaddress_parameters)
     std::vector<char> v (2 * (ZC_MEMO_SIZE+1));     // x2 for hexadecimal string format
     std::fill(v.begin(),v.end(), 'A');
     std::string badmemo(v.begin(), v.end());
-    CheckRPCThrows("z_mergetoaddress [\"" + taddr1 + "\"] " + aSproutAddr + " 0.0001 100 100 " + badmemo, 
+    CheckRPCThrows("z_mergetoaddress [\"" + taddr1 + "\"] " + aSproutAddr + " 0.0001 100 100 " + badmemo,
         "Invalid parameter, size of memo is larger than maximum allowed 512");
 
     // Mutable tx containing contextual information we need to build tx
@@ -1809,9 +1809,9 @@ BOOST_AUTO_TEST_CASE(rpc_z_mergetoaddress_parameters)
         BOOST_CHECK( find_error(objError, "Recipient parameter missing"));
     }
 
-    std::vector<MergeToAddressInputSproutNote> sproutNoteInputs = 
+    std::vector<MergeToAddressInputSproutNote> sproutNoteInputs =
         {MergeToAddressInputSproutNote{JSOutPoint(), SproutNote(), 0, SproutSpendingKey()}};
-    std::vector<MergeToAddressInputSaplingNote> saplingNoteInputs = 
+    std::vector<MergeToAddressInputSaplingNote> saplingNoteInputs =
         {MergeToAddressInputSaplingNote{SaplingOutPoint(), SaplingNote(), 0, SaplingExpandedSpendingKey()}};
 
     // Sprout and Sapling inputs -> throw
