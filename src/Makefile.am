@@ -170,6 +170,9 @@ BITCOIN_CORE_H = \
   noui.h \
   policy/fees.h \
   pow.h \
+  prime/bignum.h \
+  prime/prime.h \
+  prime/parameters.h \
   prevector.h \
   primitives/block.h \
   primitives/transaction.h \
@@ -265,6 +268,8 @@ libbitcoin_server_a_SOURCES = \
   net.cpp \
   noui.cpp \
   policy/fees.cpp \
+  prime/prime.cpp \
+  prime/parameters.cpp \
   pow.cpp \
   rest.cpp \
   rpc/blockchain.cpp \
